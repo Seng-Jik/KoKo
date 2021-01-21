@@ -9,7 +9,8 @@ let LogFile = File.OpenWrite ("downloads/log.log")
 let LogFileWriter = new StreamWriter (LogFile)
 
 let Spiders : ISpider list =
-    Konachan.Spiders @ Danbooru.Spiders
+    Konachan.Spiders
+    //Konachan.Spiders @ Danbooru.Spiders
 
 
 type FinishedListCsv = CsvProvider<"Konachan,0,\"a\"",HasHeaders = false, Schema="SpiderName (string),Id (int),FileName (string)">
@@ -39,55 +40,55 @@ let posts =
 printfn "Press any key to continue..."
 System.Console.ReadKey () |> ignore
 
-
-printfn "-- Download --"
-
-let downloading = System.Collections.Concurrent.ConcurrentDictionary<string,unit> ()
+let downloadingTask = System.Collections.Concurrent.ConcurrentDictionary<string, unit>()
 
 let downloadPost (post: Post) = 
     if FinishedList.Rows |> Seq.exists (fun x -> x.SpiderName = post.fromSpider.Name && uint64 x.Id = post.id) |> not then
         post.images
         |> PSeq.iter (fun x -> 
             async {
-                let information = $"{post.fromSpider.Name} {post.id}"
-                downloading.TryAdd (information, ()) |> ignore
-                match! Mipmaps.downloadBestImage x with
-                | Error e -> 
-                    lock LogFile (fun () ->
-                        LogFileWriter.WriteLine ("--------")
-                        LogFileWriter.WriteLine (sprintf "%A" post)
-                        LogFileWriter.WriteLine (sprintf "%A" e)
-                        LogFile.Flush ())
-                | Ok (data, image) ->
-                    let target = downloadDir + image.fileName
-                    File.WriteAllBytes (target, data)
-                    let newRow = FinishedListCsv.Row (post.fromSpider.Name,int post.id,target)
-                    lock finishedListFile (fun () ->
-                        FinishedList <- FinishedList.Append [newRow]
-                        let csv = FinishedList.SaveToString()
-                        File.WriteAllText (finishedListFile, csv))
-                downloading.TryRemove(information, ref ()) |> ignore
+                try
+                    let c = sprintf "%s %d" post.fromSpider.Name post.id
+                    downloadingTask.TryAdd (c, ()) |> ignore
+                    match! Mipmaps.downloadBestImage x with
+                    | Error e -> 
+                        lock LogFile (fun () ->
+                            LogFileWriter.WriteLine ("--------")
+                            LogFileWriter.WriteLine (sprintf "%A" post)
+                            LogFileWriter.WriteLine (sprintf "%A" e)
+                            LogFile.Flush ())
+                    | Ok (data, image) ->
+                        let target = downloadDir + Utils.normalizeFileName image.fileName
+                        File.WriteAllBytes (target, data)
+                        let newRow = FinishedListCsv.Row (post.fromSpider.Name,int post.id,target)
+                        lock finishedListFile (fun () ->
+                            FinishedList <- FinishedList.Append [newRow]
+                            let csv = FinishedList.SaveToString()
+                            File.WriteAllText (finishedListFile, csv))
+                    downloadingTask.TryRemove(c, ref ()) |> ignore
+                with e ->
+                    printfn "%A" e
             }
             |> Async.RunSynchronously)
 
-let task =
-    async {
-        posts
-        |> Seq.toArray
-        |> Utils.MixEnumerable
-        |> PSeq.iter (fun post -> async { downloadPost post } |> Async.Start)
-    }
-    |> Async.StartAsTask
+let tasks = System.Collections.Concurrent.ConcurrentBag ()
 
-while not task.IsCompleted do
+async {
+    posts
+    |> Seq.toArray
+    |> Utils.MixEnumerable
+    |> PSeq.iter (fun post -> async { downloadPost post } |> Async.StartAsTask |> tasks.Add)
+}
+|> Async.StartAsTask
+|> tasks.Add
+
+while true do
     System.Console.Clear ()
-
-    printfn "= KoKo Downloader ="
-    for i in downloading do
+    printfn "= Downloading ="
+    for i in downloadingTask do
         printfn "%s" i.Key
+    System.Threading.Thread.Sleep(1000)
 
-    System.Threading.Thread.Sleep (System.TimeSpan.FromMilliseconds 500.0) 
+for i in tasks do
+    i.Result
 
-
-
-    

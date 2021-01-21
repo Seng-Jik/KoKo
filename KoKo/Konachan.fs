@@ -47,15 +47,17 @@ type KonachanSpider (args: SpiderArguments) =
                             |> Async.RunSynchronously
                             |> function
                             | Error e -> raise e
-                            | Ok x -> x |> PostParser.Parse
+                            | Ok x -> x |> Utils.normalizeXml |> PostParser.Parse
                             |> fun xml -> result <- Ok xml
                             retry <- 0
                         with e -> 
                             result <- Error e
                             retry <- retry - 1
-                    match result with
-                    | Ok x -> x 
-                    | Error e -> raise e)
+                    match result with           // Bug Here
+                    | Ok x -> x
+                    | Error e -> raise e)       // Do not raise here
+            let head = Seq.head pages
+            let pages = Seq.append [head] <| Seq.tail pages
             let count = (Seq.head pages).Count
             pages
             |> Seq.collect (fun x -> x.Posts)
@@ -162,8 +164,8 @@ let HypnoHub = KonachanSpider {
 }
 
 let Spiders : ISpider list = [
-    //Konachan
-    Lolibooru
+    Konachan
+    Lolibooru     // 这个网站提供的XML非常怪异，充满了各种奇怪的字符导致报错
     Gelbooru
     Yandere
     TheBigImageBoard

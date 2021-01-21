@@ -20,17 +20,17 @@ type DanbooruSpider (name, domain) =
                             |> Async.RunSynchronously
                             |> function
                             | Error e -> raise e
-                            | Ok x -> x |> PostParser.Parse
+                            | Ok x -> x |> Utils.normalizeXml |> PostParser.Parse
                             |> fun xml -> result <- Ok xml
                             retry <- 0
                         with e -> 
                             result <- Error e
                             retry <- retry - 1
                     match result with
-                    | Ok x -> x 
-                    | Error e -> raise e)
-                |> Seq.takeWhile (fun x -> x.Posts.Length > 0)
-                |> Seq.collect (fun x -> x.Posts)
+                    | Ok x -> x.Posts
+                    | Error e -> [||])   // TODO: Report x
+                |> Seq.takeWhile (fun x -> x.Length > 0)    // Bug Here.
+                |> Seq.concat
             
             pages
             |> Seq.choose (fun x -> 
@@ -55,7 +55,8 @@ type DanbooruSpider (name, domain) =
                             }
                         images = seq {   
                             seq {
-                                if x.HasLarge.Value then
+                                let attrs = x.XElement.Elements()
+                                if attrs |> Seq.exists (fun x -> x.Name.LocalName = "large-file-url") then
                                     {
                                         imageUrl = x.LargeFileUrl
                                         fileName = Utils.getFileNameFromUrl x.LargeFileUrl

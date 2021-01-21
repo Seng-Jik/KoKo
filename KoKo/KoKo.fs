@@ -40,6 +40,7 @@ module Utils =
 
     let downloadString (url: string) = async {
         use webClient = new System.Net.WebClient ()
+        //printfn "DS: %s" url
         try return (Ok <| webClient.DownloadString url)
         with e -> return (Error e)
     }
@@ -49,36 +50,42 @@ module Utils =
         url.[1 + url.LastIndexOf '/'..] 
         |> System.Web.HttpUtility.UrlDecode
 
-    let normalizeFileName (x : string) = 
-        let mutable ret = x
+    let normalizeFileName (x: string) = 
         [":";"*";"!";"#";"?";"%";"<";">";"|";"\"";"\\";"/";"\"";"\'"]
-        |> List.iter (fun c -> ret <- ret.Replace (c,""))
-        ret.Trim()
+        |> List.fold (fun (s: string) (c: string) -> s.Replace (c,"")) x
+        |> fun x -> x.Trim()
+
+    let normalizeXml (x: string) =
+        ["&auml;"; "&frac34;"]
+        |> List.fold (fun (s: string) c -> s.Replace (c, "")) x
+        |> fun x -> x.Trim()
 
     type MixEnumerator<'a> (seqs: 'a seq []) =
         let seqs = seqs |> Array.map (fun x -> x.GetEnumerator())
         let mutable index = -1
         interface System.Collections.Generic.IEnumerator<'a> with
-            member this.Current: 'a = seqs.[index].Current
-            member this.Current: obj = seqs.[index].Current :> obj
+            member this.Current: 'a = lock this (fun () -> seqs.[index].Current)
+            member this.Current: obj = lock this (fun () -> seqs.[index].Current :> obj)
             member this.Dispose(): unit = ()
 
-            member _.Reset () = 
-                for i in seqs do i.Reset ()
-                index <- -1
+            member x.Reset () = 
+                lock x (fun () ->
+                    for i in seqs do i.Reset ()
+                    index <- -1)
 
-            member _.MoveNext () =
-                let mutable brk = false
-                let mutable countDown = seqs.Length + 1
-                let mutable ret = true
-                while not brk do
-                    index <- (index + 1) % seqs.Length
-                    brk <- seqs.[index].MoveNext ()
-                    countDown <- countDown - 1
-                    if countDown <= 0 then
-                        brk <- true
-                        ret <- false
-                ret
+            member x.MoveNext () =
+                lock x (fun () ->
+                    let mutable brk = false
+                    let mutable countDown = seqs.Length + 1
+                    let mutable ret = true
+                    while not brk do
+                        index <- (index + 1) % seqs.Length
+                        brk <- seqs.[index].MoveNext ()
+                        countDown <- countDown - 1
+                        if countDown <= 0 then
+                            brk <- true
+                            ret <- false
+                    ret)
 
     type MixEnumerable<'a> (seqs: 'a seq []) =
         interface System.Collections.Generic.IEnumerable<'a> with
@@ -134,5 +141,5 @@ module Spider =
     let name (spider: #ISpider) = spider.Name
 
     let test (spider: #ISpider) =
-        try spider.All |> Seq.head |> ignore |> Ok
+        try spider.Search "" |> ignore |> Ok
         with e -> Error e
