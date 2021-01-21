@@ -74,9 +74,8 @@ let task =
     async {
         posts
         |> Seq.toArray
-        |> Array.Parallel.iter (fun posts ->
-            posts
-            |> PSeq.iter (fun x -> async { downloadPost x } |> Async.Start))
+        |> Utils.MixEnumerable
+        |> PSeq.iter (fun post -> async { downloadPost post } |> Async.Start)
     }
     |> Async.StartAsTask
 

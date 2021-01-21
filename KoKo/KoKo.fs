@@ -51,9 +51,41 @@ module Utils =
 
     let normalizeFileName (x : string) = 
         let mutable ret = x
-        [":";"*";"!";"#";"?";"%";"<";">";"|";"\"";"\\";"/"]
+        [":";"*";"!";"#";"?";"%";"<";">";"|";"\"";"\\";"/";"\"";"\'"]
         |> List.iter (fun c -> ret <- ret.Replace (c,""))
         ret.Trim()
+
+    type MixEnumerator<'a> (seqs: 'a seq []) =
+        let seqs = seqs |> Array.map (fun x -> x.GetEnumerator())
+        let mutable index = -1
+        interface System.Collections.Generic.IEnumerator<'a> with
+            member this.Current: 'a = seqs.[index].Current
+            member this.Current: obj = seqs.[index].Current :> obj
+            member this.Dispose(): unit = ()
+
+            member _.Reset () = 
+                for i in seqs do i.Reset ()
+                index <- -1
+
+            member _.MoveNext () =
+                let mutable brk = false
+                let mutable countDown = seqs.Length + 1
+                let mutable ret = true
+                while not brk do
+                    index <- (index + 1) % seqs.Length
+                    brk <- seqs.[index].MoveNext ()
+                    countDown <- countDown - 1
+                    if countDown <= 0 then
+                        brk <- true
+                        ret <- false
+                ret
+
+    type MixEnumerable<'a> (seqs: 'a seq []) =
+        interface System.Collections.Generic.IEnumerable<'a> with
+            member this.GetEnumerator(): System.Collections.IEnumerator = 
+                new MixEnumerator<'a> (seqs) :> System.Collections.IEnumerator
+            member this.GetEnumerator(): System.Collections.Generic.IEnumerator<'a> =
+                new MixEnumerator<'a> (seqs) :> System.Collections.Generic.IEnumerator<'a>
 
 
 module Image =
