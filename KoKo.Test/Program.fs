@@ -4,6 +4,7 @@ open System.IO
 
 let Spiders = 
     Danbooru.Spiders
+    @ Konachan.Spiders
 
 if Directory.Exists "downloads" then
     Directory.Delete ("downloads", true)

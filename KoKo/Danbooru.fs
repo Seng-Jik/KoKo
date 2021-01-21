@@ -29,7 +29,7 @@ type DanbooruSpider (name, domain) =
                 |> Seq.collect (fun x -> x.Posts)
             
             pages
-            |> Seq.map (fun x -> {
+            |> Seq.map (fun x -> {          // TODO: 这里需要Wrap
                 id = uint64 x.Id.Value
                 fromSpider = spider
                 rating = Konachan.parseRating x.Rating

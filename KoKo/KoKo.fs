@@ -43,6 +43,13 @@ module Utils =
         url.[1 + url.LastIndexOf '/'..] 
         |> System.Web.HttpUtility.UrlDecode
 
+    let normalizeFileName (x : string) = 
+        let mutable ret = x
+        [":";"*";"!";"#";"?";"%";"<";">";"|";"\"";"\\";"/"]
+        |> List.iter (fun c -> ret <- ret.Replace (c,""))
+        ret.Trim()
+
+
 module Image =
     let download (image: Image) = async {
         let mutable retry = 5
@@ -85,5 +92,9 @@ module Mipmaps =
 
 module Spider = 
     let all (spider: #ISpider) = spider.All
-    let search (spider: #ISpider) tags = spider.Search tags
+    let search tags (spider: #ISpider) = spider.Search tags
     let name (spider: #ISpider) = spider.Name
+
+    let test (spider: #ISpider) =
+        try spider.All |> Seq.head |> ignore |> Ok
+        with e -> Error e
