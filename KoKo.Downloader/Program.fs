@@ -8,13 +8,13 @@ System.IO.Directory.CreateDirectory "downloads" |> ignore
 let LogFile = File.OpenWrite ("downloads/log.log")
 let LogFileWriter = new StreamWriter (LogFile)
 
-let Spiders =
+let Spiders : ISpider list =
     Konachan.Spiders @ Danbooru.Spiders
 
 
 type FinishedListCsv = CsvProvider<"Konachan,0,\"a\"",HasHeaders = false, Schema="SpiderName (string),Id (int),FileName (string)">
 
-let finishedListFile = "download/finished.csv"
+let finishedListFile = "downloads/finished.csv"
 let mutable FinishedList =
     if File.Exists finishedListFile then (FinishedListCsv.Parse <| File.ReadAllText finishedListFile).Cache()
     else (FinishedListCsv.Parse ",,").Cache()
@@ -28,12 +28,13 @@ Directory.CreateDirectory downloadDir |> ignore
 printfn "-- Spiders --"
 let posts =
     Spiders
-    |> PSeq.filter (fun x -> Spider.test x = Ok ())
+    |> PSeq.filter (fun x -> 
+        if Spider.test x = Ok () then
+            printfn "%s" x.Name
+            true
+        else false)
     |> PSeq.toArray
-    |> Array.map (fun x -> 
-        printfn "%s" x.Name 
-        x)
-    |> Array.map (Spider.search tags)
+    |> Seq.map (Spider.search tags)
 
 printfn "Press any key to continue..."
 System.Console.ReadKey () |> ignore
@@ -61,9 +62,10 @@ let downloadPost (post: Post) =
                     let target = downloadDir + image.fileName
                     File.WriteAllBytes (target, data)
                     let newRow = FinishedListCsv.Row (post.fromSpider.Name,int post.id,target)
-                    lock FinishedList (fun () ->
+                    lock finishedListFile (fun () ->
                         FinishedList <- FinishedList.Append [newRow]
-                        FinishedList.Save finishedListFile)
+                        let csv = FinishedList.SaveToString()
+                        File.WriteAllText (finishedListFile, csv))
                 downloading.TryRemove(information, ref ()) |> ignore
             }
             |> Async.RunSynchronously)
@@ -71,9 +73,10 @@ let downloadPost (post: Post) =
 let task =
     async {
         posts
+        |> Seq.toArray
         |> Array.Parallel.iter (fun posts ->
             posts
-            |> PSeq.iter downloadPost)
+            |> PSeq.iter (fun x -> async { downloadPost x } |> Async.Start))
     }
     |> Async.StartAsTask
 

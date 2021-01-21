@@ -33,8 +33,14 @@ and ISpider =
 
 module Utils =
     let downloadData (url: string) = async {
-        use x = new System.Net.WebClient ()
-        try return (Ok <| x.DownloadData url)
+        use webClient = new System.Net.WebClient ()
+        try return (Ok <| webClient.DownloadData url)
+        with e -> return (Error e)
+    }
+
+    let downloadString (url: string) = async {
+        use webClient = new System.Net.WebClient ()
+        try return (Ok <| webClient.DownloadString url)
         with e -> return (Error e)
     }
 

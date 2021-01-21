@@ -43,7 +43,11 @@ type KonachanSpider (args: SpiderArguments) =
                     while retry > 0 do
                         try
                             sprintf args.requestFormat args.domain pageId tags
-                            |> PostParser.Load
+                            |> Utils.downloadString
+                            |> Async.RunSynchronously
+                            |> function
+                            | Error e -> raise e
+                            | Ok x -> x |> PostParser.Parse
                             |> fun xml -> result <- Ok xml
                             retry <- 0
                         with e -> 
