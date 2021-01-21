@@ -16,7 +16,7 @@ Anime wallpaper downloader.
 
 ## 进度
 - [x] Konachan Spider
-- [ ] KoKo Downloader
+- [x] KoKo Downloader
 - [x] Danbooru Spider
 - [ ] SankakuComplex Spider
 - [ ] E-shuushuu.net
