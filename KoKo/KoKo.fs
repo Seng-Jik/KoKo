@@ -1,9 +1,7 @@
 namespace KoKo
 
 type Image = {
-    width : int
-    height : int
-    data : Result<byte[],exn> Async
+    imageUrl : string
     fileName : string
 }
 
@@ -51,7 +49,7 @@ module Image =
         let mutable result : Result<byte[], exn> = Error null
         while retry > 0 do
             try 
-                match! image.data with
+                match! Utils.downloadData image.imageUrl with
                 | Error e -> raise e
                 | Ok x -> 
                     result <- Ok x
@@ -69,7 +67,6 @@ module Mipmaps =
         if Seq.tryHead mipmaps |> Option.isSome then
             let data =
                 mipmaps
-                |> Seq.sortByDescending (fun x -> x.width * x.height)
                 |> Seq.tryPick (fun image ->
                     Image.download image
                     |> Async.RunSynchronously

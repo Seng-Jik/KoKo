@@ -3,7 +3,7 @@ open KoKo
 
 System.IO.Directory.CreateDirectory "downloads" |> ignore
 
-Spider.all Konachan.AllGirl
+Spider.all Konachan.Konachan
 |> Seq.take 10
 |> Seq.collect (fun x -> x.images)
 |> Seq.map (fun x -> async {

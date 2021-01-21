@@ -22,8 +22,14 @@ module SourceUrlFormats =
     let Konachan : SourceUrlFormat = "%s/post/show/%u"
     let Gelbooru : SourceUrlFormat = "%s/index.php?page=post&s=view&id=%u"
 
+let parseRating = function
+| "s" -> Safe
+| "q" -> Questionable
+| "e" -> Explicit
+| _ -> Unknown
 
-type PostXmlParser = XmlProvider<"https://konachan.net/post.xml?page=1&limit=100">
+
+type PostParser = XmlProvider<"https://konachan.net/post.xml?page=1&limit=100">
 
 type KonachanSpider (args: SpiderArguments) =
     interface ISpider with
@@ -33,11 +39,11 @@ type KonachanSpider (args: SpiderArguments) =
             let pages =
                 Seq.initInfinite (fun pageId ->
                     let mutable retry = 5
-                    let mutable result : Result<PostXmlParser.Posts, exn> = Error null
+                    let mutable result : Result<PostParser.Posts, exn> = Error null
                     while retry > 0 do
                         try
                             sprintf args.requestFormat args.domain pageId tags
-                            |> PostXmlParser.Load
+                            |> PostParser.Load
                             |> fun xml -> result <- Ok xml
                             retry <- 0
                         with e -> 
@@ -53,12 +59,8 @@ type KonachanSpider (args: SpiderArguments) =
             |> Seq.map (fun x -> {      // TODO: Wrap here to a 'try' block.
                 id = uint64 x.Id
                 fromSpider = spider
-                rating = 
-                    match x.Rating with
-                    | "s" -> Safe
-                    | "q" -> Questionable
-                    | "e" -> Explicit
-                    | _ -> Unknown
+                rating = parseRating x.Rating
+                    
                 score = x.Score |> float |> ValueSome
                 sourceUrl = seq { 
                     sprintf args.sourceUrlFormat (args.sourceUrlDomain |> Option.defaultValue args.domain) <| uint64 x.Id
@@ -69,35 +71,27 @@ type KonachanSpider (args: SpiderArguments) =
                 tags = x.Tags.Trim().Split ' '
                 previewImage = 
                     Some {
-                        width = x.PreviewWidth
-                        height = x.PreviewHeight
-                        data = Utils.downloadData x.PreviewUrl
+                        imageUrl = x.PreviewUrl
                         fileName = Utils.getFileNameFromUrl x.PreviewUrl
                     }
 
                 images = seq {
                     seq {
                         {
-                            width = x.Width
-                            height = x.Height
-                            data = Utils.downloadData x.FileUrl
+                            imageUrl = x.FileUrl
                             fileName = Utils.getFileNameFromUrl x.FileUrl
                         }
 
                         let attrs = x.XElement.Attributes()
                         if attrs |> Seq.exists (fun x -> x.Name.LocalName = "jpeg_url") then
                             {
-                                width = x.JpegWidth
-                                height = x.JpegHeight
-                                data = Utils.downloadData x.JpegUrl
+                                imageUrl = x.JpegUrl
                                 fileName = Utils.getFileNameFromUrl x.JpegUrl
                             }
 
                         if attrs |> Seq.exists (fun x -> x.Name.LocalName = "sample_url") then
                             {
-                                width = x.SampleWidth
-                                height = x.SampleHeight
-                                data = Utils.downloadData x.SampleUrl
+                                imageUrl = x.SampleUrl
                                 fileName = Utils.getFileNameFromUrl x.SampleUrl
                             }
                     }
@@ -160,7 +154,7 @@ let HypnoHub = KonachanSpider {
     sourceUrlDomain = None
 }
 
-let Spiders = [
+let Spiders : ISpider list = [
     Konachan
     Lolibooru
     Gelbooru

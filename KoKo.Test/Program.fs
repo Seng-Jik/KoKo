@@ -3,7 +3,7 @@ open KoKo
 open System.IO
 
 let Spiders = 
-    Konachan.Spiders
+    Danbooru.Spiders
 
 if Directory.Exists "downloads" then
     Directory.Delete ("downloads", true)
@@ -32,18 +32,6 @@ Spiders
         printf "Tags: "
         for i in (if Seq.length p.tags > 3 then Seq.take 3 p.tags else p.tags) do printf "%s, " i
         printfn "..."
-
-        printfn "Images:"
-        match p.previewImage with
-        | Some pv ->
-            printfn "\tPreview: %dx%d" pv.width pv.height
-        | None -> ()
-        p.images
-        |> Seq.iteri (fun index mipmaps ->
-            printf "\tImage %d: " index
-            for i in mipmaps do
-                printf "%dx%d, " i.width i.height
-            printfn "")
 
         printfn ""
         printfn ""
