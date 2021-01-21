@@ -60,47 +60,50 @@ type KonachanSpider (args: SpiderArguments) =
             pages
             |> Seq.collect (fun x -> x.Posts)
             |> Seq.take count
-            |> Seq.map (fun x -> {      // TODO: Wrap here to a 'try' block.
-                id = uint64 x.Id
-                fromSpider = spider
-                rating = parseRating x.Rating
-                    
-                score = x.Score |> float |> ValueSome
-                sourceUrl = seq { 
-                    sprintf args.sourceUrlFormat (args.sourceUrlDomain |> Option.defaultValue args.domain) <| uint64 x.Id
-                    if x.Source.IsSome then 
-                        if not <| System.String.IsNullOrWhiteSpace x.Source.Value then
-                            x.Source.Value 
-                }
-                tags = x.Tags.Trim().Split ' '
-                previewImage = 
+            |> Seq.choose (fun x -> 
+                try 
                     Some {
-                        imageUrl = x.PreviewUrl
-                        fileName = Utils.getFileNameFromUrl x.PreviewUrl
-                    }
-
-                images = seq {
-                    seq {
-                        {
-                            imageUrl = x.FileUrl
-                            fileName = Utils.getFileNameFromUrl x.FileUrl
+                        id = uint64 x.Id
+                        fromSpider = spider
+                        rating = parseRating x.Rating
+                    
+                        score = x.Score |> float |> ValueSome
+                        sourceUrl = seq { 
+                            sprintf args.sourceUrlFormat (args.sourceUrlDomain |> Option.defaultValue args.domain) <| uint64 x.Id
+                            if x.Source.IsSome then 
+                                if not <| System.String.IsNullOrWhiteSpace x.Source.Value then
+                                    x.Source.Value 
                         }
-
-                        let attrs = x.XElement.Attributes()
-                        if attrs |> Seq.exists (fun x -> x.Name.LocalName = "jpeg_url") then
-                            {
-                                imageUrl = x.JpegUrl
-                                fileName = Utils.getFileNameFromUrl x.JpegUrl
+                        tags = x.Tags.Trim().Split ' '
+                        previewImage = 
+                            Some {
+                                imageUrl = x.PreviewUrl
+                                fileName = Utils.getFileNameFromUrl x.PreviewUrl
                             }
 
-                        if attrs |> Seq.exists (fun x -> x.Name.LocalName = "sample_url") then
-                            {
-                                imageUrl = x.SampleUrl
-                                fileName = Utils.getFileNameFromUrl x.SampleUrl
+                        images = seq {
+                            seq {
+                                {
+                                    imageUrl = x.FileUrl
+                                    fileName = Utils.getFileNameFromUrl x.FileUrl
+                                }
+
+                                let attrs = x.XElement.Attributes()
+                                if attrs |> Seq.exists (fun x -> x.Name.LocalName = "jpeg_url") then
+                                    {
+                                        imageUrl = x.JpegUrl
+                                        fileName = Utils.getFileNameFromUrl x.JpegUrl
+                                    }
+
+                                if attrs |> Seq.exists (fun x -> x.Name.LocalName = "sample_url") then
+                                    {
+                                        imageUrl = x.SampleUrl
+                                        fileName = Utils.getFileNameFromUrl x.SampleUrl
+                                    }
                             }
+                        }
                     }
-                }
-            })
+                with _ -> None)
 
 let Konachan = KonachanSpider { 
     name = "Konachan"

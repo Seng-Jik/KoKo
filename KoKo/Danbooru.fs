@@ -33,38 +33,41 @@ type DanbooruSpider (name, domain) =
                 |> Seq.collect (fun x -> x.Posts)
             
             pages
-            |> Seq.map (fun x -> {          // TODO: 这里需要Wrap
-                id = uint64 x.Id.Value
-                fromSpider = spider
-                rating = Konachan.parseRating x.Rating
-                score = x.Score.Value |> float |> ValueSome
-
-                sourceUrl = seq {
-                    sprintf "%s/posts/%u" domain <| uint64 x.Id.Value
-                    if x.Source.IsSome then
-                        if not <| System.String.IsNullOrWhiteSpace x.Source.Value then
-                            x.Source.Value
-                }
-                tags = x.TagString.Trim().Split ' '
-                previewImage = 
+            |> Seq.choose (fun x -> 
+                try 
                     Some {
-                        imageUrl = x.PreviewFileUrl
-                        fileName = Utils.getFileNameFromUrl x.PreviewFileUrl
-                    }
-                images = seq {   
-                    seq {
-                        if x.HasLarge.Value then
-                            {
-                                imageUrl = x.LargeFileUrl
-                                fileName = Utils.getFileNameFromUrl x.LargeFileUrl
-                            }
-                        {
-                            imageUrl = x.FileUrl
-                            fileName = Utils.getFileNameFromUrl x.FileUrl
+                        id = uint64 x.Id.Value
+                        fromSpider = spider
+                        rating = Konachan.parseRating x.Rating
+                        score = x.Score.Value |> float |> ValueSome
+
+                        sourceUrl = seq {
+                            sprintf "%s/posts/%u" domain <| uint64 x.Id.Value
+                            if x.Source.IsSome then
+                                if not <| System.String.IsNullOrWhiteSpace x.Source.Value then
+                                    x.Source.Value
                         }
-                    }
-                }
-            })
+                        tags = x.TagString.Trim().Split ' '
+                        previewImage = 
+                            Some {
+                                imageUrl = x.PreviewFileUrl
+                                fileName = Utils.getFileNameFromUrl x.PreviewFileUrl
+                            }
+                        images = seq {   
+                            seq {
+                                if x.HasLarge.Value then
+                                    {
+                                        imageUrl = x.LargeFileUrl
+                                        fileName = Utils.getFileNameFromUrl x.LargeFileUrl
+                                    }
+                                {
+                                    imageUrl = x.FileUrl
+                                    fileName = Utils.getFileNameFromUrl x.FileUrl
+                                }
+                            }
+                        }
+                    } 
+                with _ -> None)
        
 let Danbooru = DanbooruSpider ("Danbooru", "https://danbooru.donmai.us")
 let ATFBooru = DanbooruSpider ("ATFBooru", "https://booru.allthefallen.moe/")
