@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "KoKo", "KoKo\KoKo.fsproj", "{2DD0AAC1-8FC7-47BB-9DEE-150A55AF3D35}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "KoKo.Downloader", "KoKo.Downloader\KoKo.Downloader.fsproj", "{32529274-E38D-41DF-932E-ED9903AC5A98}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "KoKo.Downloader", "KoKo.Downloader\KoKo.Downloader.fsproj", "{32529274-E38D-41DF-932E-ED9903AC5A98}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "KoKo.Test", "KoKo.Test\KoKo.Test.fsproj", "{ACF10FC8-F118-4777-B634-33BA2BD25D65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,18 @@ Global
 		{32529274-E38D-41DF-932E-ED9903AC5A98}.Release|x64.Build.0 = Release|Any CPU
 		{32529274-E38D-41DF-932E-ED9903AC5A98}.Release|x86.ActiveCfg = Release|Any CPU
 		{32529274-E38D-41DF-932E-ED9903AC5A98}.Release|x86.Build.0 = Release|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Debug|x64.Build.0 = Debug|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Debug|x86.Build.0 = Debug|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Release|x64.ActiveCfg = Release|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Release|x64.Build.0 = Release|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Release|x86.ActiveCfg = Release|Any CPU
+		{ACF10FC8-F118-4777-B634-33BA2BD25D65}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,6 +10,7 @@ type SpiderArguments = {
     domain : string
     requestFormat : RequestFormat
     sourceUrlFormat : SourceUrlFormat
+    sourceUrlDomain : string option
 }
 
 module RequestFormats =
@@ -60,10 +61,12 @@ type KonachanSpider (args: SpiderArguments) =
                     | _ -> Unknown
                 score = x.Score |> float |> ValueSome
                 sourceUrl = seq { 
-                    sprintf args.sourceUrlFormat args.domain <| uint64 x.Id
-                    if x.Source.IsSome then x.Source.Value 
+                    sprintf args.sourceUrlFormat (args.sourceUrlDomain |> Option.defaultValue args.domain) <| uint64 x.Id
+                    if x.Source.IsSome then 
+                        if not <| System.String.IsNullOrWhiteSpace x.Source.Value then
+                            x.Source.Value 
                 }
-                tags = x.Tags.Split ' '
+                tags = x.Tags.Trim().Split ' '
                 previewImage = 
                     Some {
                         width = x.PreviewWidth
@@ -106,6 +109,7 @@ let Konachan = KonachanSpider {
     domain = "http://konachan.net" 
     requestFormat = RequestFormats.Konachan
     sourceUrlFormat = SourceUrlFormats.Konachan
+    sourceUrlDomain = Some "http://konachan.com"
 }
 
 let Lolibooru = KonachanSpider {
@@ -113,6 +117,7 @@ let Lolibooru = KonachanSpider {
     domain = "https://lolibooru.moe"
     requestFormat = RequestFormats.Konachan
     sourceUrlFormat = SourceUrlFormats.Konachan
+    sourceUrlDomain = None
 }
 
 let Gelbooru = KonachanSpider {
@@ -120,6 +125,7 @@ let Gelbooru = KonachanSpider {
     domain = "https://gelbooru.com"
     requestFormat = RequestFormats.Gelbooru
     sourceUrlFormat = SourceUrlFormats.Gelbooru
+    sourceUrlDomain = None
 }
 
 let Yandere = KonachanSpider {
@@ -127,6 +133,7 @@ let Yandere = KonachanSpider {
     domain = "https://yande.re"
     requestFormat = RequestFormats.Konachan
     sourceUrlFormat = SourceUrlFormats.Konachan
+    sourceUrlDomain = None
 }
 
 let TheBigImageBoard = KonachanSpider {
@@ -134,6 +141,7 @@ let TheBigImageBoard = KonachanSpider {
     domain = "https://tbib.org"
     requestFormat = RequestFormats.Gelbooru
     sourceUrlFormat = SourceUrlFormats.Gelbooru
+    sourceUrlDomain = None
 }
 
 let Safebooru = KonachanSpider {
@@ -141,6 +149,7 @@ let Safebooru = KonachanSpider {
     domain = "https://safebooru.org"
     requestFormat = RequestFormats.Gelbooru
     sourceUrlFormat = SourceUrlFormats.Gelbooru
+    sourceUrlDomain = None
 }
 
 let HypnoHub = KonachanSpider {
@@ -148,11 +157,15 @@ let HypnoHub = KonachanSpider {
     domain = "https://hypnohub.net"
     requestFormat = RequestFormats.HypnoHub
     sourceUrlFormat = SourceUrlFormats.Konachan
+    sourceUrlDomain = None
 }
 
-let AllGirl = KonachanSpider {
-    name = "All Girl"
-    domain = "https://allgirl.booru.org"
-    requestFormat = RequestFormats.Gelbooru
-    sourceUrlFormat = SourceUrlFormats.Gelbooru
-}
+let Spiders = [
+    Konachan
+    Lolibooru
+    Gelbooru
+    Yandere
+    TheBigImageBoard
+    Safebooru
+    HypnoHub
+]
