@@ -162,7 +162,7 @@ let HypnoHub = KonachanSpider {
 }
 
 let Spiders : ISpider list = [
-    Konachan
+    //Konachan
     Lolibooru
     Gelbooru
     Yandere
