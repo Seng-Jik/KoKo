@@ -47,7 +47,7 @@ type KonachanSpider (args: SpiderArguments) =
                             |> Async.RunSynchronously
                             |> function
                             | Error e -> raise e
-                            | Ok x -> x |> Utils.normalizeXml |> PostParser.Parse
+                            | Ok x -> x |> XMLPreprocessor.PreprocessXML |> PostParser.Parse
                             |> fun xml -> result <- Ok xml
                             retry <- 0
                         with e -> 
@@ -177,11 +177,11 @@ let HypnoHub = KonachanSpider {
 }
 
 let Spiders : ISpider list = [
-    Konachan
+    //Konachan
     //Lolibooru     // 这个网站提供的XML非常怪异，充满了各种奇怪的字符导致报错
-    //Gelbooru
-    Yandere
+    Gelbooru
+    //Yandere
     //TheBigImageBoard
-    Safebooru
+    //Safebooru
     //HypnoHub      // Break
 ]

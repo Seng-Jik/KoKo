@@ -20,7 +20,7 @@ type DanbooruSpider (name, domain) =
                             |> Async.RunSynchronously
                             |> function
                             | Error e -> raise e
-                            | Ok x -> x |> Utils.normalizeXml |> PostParser.Parse
+                            | Ok x -> x |> XMLPreprocessor.PreprocessXML |> PostParser.Parse
                             |> fun xml -> result <- Ok xml
                             retry <- 0
                         with e -> 

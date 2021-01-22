@@ -56,10 +56,16 @@ module Utils =
         |> List.fold (fun (s: string) (c: string) -> s.Replace (c,"")) x
         |> fun x -> x.Trim()
 
-    let normalizeXml (x: string) =
-        ["&auml;"; "&frac34;"]
-        |> List.fold (fun (s: string) c -> s.Replace (c, "")) x
-        |> fun x -> x.Trim()
+    let private xmlNormalizer =
+        let res = 
+            System.Resources.ResourceManager (
+                "KoKo.Resources.XMLNormalizer", 
+                System.Reflection.Assembly.GetExecutingAssembly())
+        let x = res.GetObject("XMLNormalizer") :?> string
+        printfn "X:%A" x
+        x.Split '\n'
+        |> Array.map (fun x -> x.Trim())
+        |> Array.map (fun x -> let x = x.Split '\t' in x.[0], x.[1])
 
     type MixEnumerator<'a> (seqs: 'a seq []) =
         let seqs = seqs |> Array.map (fun x -> x.GetEnumerator())

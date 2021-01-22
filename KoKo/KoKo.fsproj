@@ -6,13 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="XMLPreprocessor.fs" />
     <Compile Include="KoKo.fs" />
     <Compile Include="Konachan.fs" />
     <Content Include="KonachanExample.xml" />
     <Compile Include="Danbooru.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="FSharp.Data" Version="3.3.3" />

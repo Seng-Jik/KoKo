@@ -20,3 +20,7 @@ Anime wallpaper downloader.
 - [x] Danbooru Spider
 - [ ] SankakuComplex Spider
 - [ ] E-shuushuu.net
+
+## 通过完全的稳定爬虫
+完全测试：指使用爬虫对整个站点所有可以爬取的图片进行索引的测试，通过此测试的爬虫可保证其稳定性。   
+* Gelbooru
