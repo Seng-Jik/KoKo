@@ -15,6 +15,7 @@ let completeTest (spider: #ISpider) =
         File.AppendAllLines("downloads/complete_test_" + spider.Name + ".csv", 
             [$"{spider.Name}, {post.id}, {string post.rating}, {post.sourceUrl |> Seq.head}"])
         printfn "%s %u" spider.Name post.id
+    printfn "Finished!"
 
 (*Spiders
 |> List.toArray
