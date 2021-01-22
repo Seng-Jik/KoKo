@@ -11,6 +11,7 @@
     <Compile Include="Konachan.fs" />
     <Content Include="KonachanExample.xml" />
     <Compile Include="Danbooru.fs" />
+    <Content Include="DanbooruExample.xml" />
   </ItemGroup>
 
   <ItemGroup>

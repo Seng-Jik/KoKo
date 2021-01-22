@@ -2,7 +2,7 @@
 
 open FSharp.Data
 
-type PostParser = XmlProvider<"https://booru.allthefallen.moe/posts.xml?limit=100">
+type PostParser = XmlProvider<"DanbooruExample.xml">
 
 type DanbooruSpider (name, domain) =
     interface ISpider with
@@ -58,18 +58,19 @@ type DanbooruSpider (name, domain) =
                         }
                         tags = x.TagString.Trim().Split ' '
                         previewImage = 
-                            Some {
-                                imageUrl = x.PreviewFileUrl
-                                fileName = Utils.getFileNameFromUrl x.PreviewFileUrl
-                            }
+                            x.PreviewFileUrl
+                            |> Option.map (fun x -> {
+                                imageUrl = x
+                                fileName = Utils.getFileNameFromUrl x
+                            })
                         images = seq {   
                             seq {
-                                let attrs = x.XElement.Elements()
-                                if attrs |> Seq.exists (fun x -> x.Name.LocalName = "large-file-url") then
-                                    {
-                                        imageUrl = x.LargeFileUrl
-                                        fileName = Utils.getFileNameFromUrl x.LargeFileUrl
-                                    }
+                                if x.LargeFileUrl.IsSome then
+                                    if not <| System.String.IsNullOrWhiteSpace x.LargeFileUrl.Value then
+                                        {
+                                            imageUrl = x.LargeFileUrl.Value
+                                            fileName = Utils.getFileNameFromUrl x.LargeFileUrl.Value
+                                        }
                                 {
                                     imageUrl = x.FileUrl
                                     fileName = Utils.getFileNameFromUrl x.FileUrl
@@ -80,7 +81,6 @@ type DanbooruSpider (name, domain) =
                 with e -> 
                     printfn "- Danbooru Spider"
                     printfn "Post Parsing Error: %A" e
-                    printfn "Post: %d" x.Id.Value
                     None)
        
 let Danbooru = DanbooruSpider ("Danbooru", "https://danbooru.donmai.us")

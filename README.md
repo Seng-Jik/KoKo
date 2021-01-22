@@ -23,6 +23,7 @@ Anime wallpaper downloader.
 * Gelbooru
 * Yandere
 * HypnoHub
+* Lolibooru
 
 ## 目前问题
 * Yandere报告的图片数量（posts标签的count属性）远远小于其实际图片数量
