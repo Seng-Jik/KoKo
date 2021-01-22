@@ -68,7 +68,7 @@ type KonachanSpider (args: SpiderArguments) =
             let count = (Seq.head pages).Count
             pages
             |> Seq.collect (fun x -> x.Posts)
-            |> Seq.take count
+            |> Seq.take (count * 2)
             |> Seq.choose (fun x -> 
                 try 
                     Some {
@@ -180,8 +180,8 @@ let Spiders : ISpider list = [
     //Konachan
     //Lolibooru     // 这个网站提供的XML非常怪异，充满了各种奇怪的字符导致报错
     Gelbooru
-    //Yandere
+    Yandere
     //TheBigImageBoard
     //Safebooru
-    //HypnoHub      // Break
+    HypnoHub      // Break
 ]

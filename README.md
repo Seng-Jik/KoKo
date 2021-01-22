@@ -9,9 +9,7 @@ Anime wallpaper downloader.
 此项目是[HaoKangFramework](https://github.com/Seng-Jik/HaoKangFramework)的后继项目。    
 以下是针对HaoKangFramework的改进：
 * 更优的代码质量
-* 更好的下载性能（HaoKangFramework存在一些由图源分页带来的性能瓶颈）
 * 优先支持Sankaku-complex(https://capi-v2.sankakucomplex.com/posts)
-* 支持所有已知的功能
 * 考虑GUI问题
 
 ## 进度
@@ -21,6 +19,11 @@ Anime wallpaper downloader.
 - [ ] SankakuComplex Spider
 - [ ] E-shuushuu.net
 
-## 通过完全的稳定爬虫
-完全测试：指使用爬虫对整个站点所有可以爬取的图片进行索引的测试，通过此测试的爬虫可保证其稳定性。   
+## 已经较为稳定的爬虫
 * Gelbooru
+* Yandere
+* HypnoHub
+
+## 目前问题
+* Yandere报告的图片数量（posts标签的count属性）远远小于其实际图片数量
+* Gelbooru需要登录后才可查看20000后的图片
