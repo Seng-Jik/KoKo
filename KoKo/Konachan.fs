@@ -29,7 +29,7 @@ let parseRating = function
 | _ -> Unknown
 
 
-type PostParser = XmlProvider<"https://konachan.net/post.xml?page=1&limit=100">
+type PostParser = XmlProvider<"KonachanExample.xml">
 
 type KonachanSpider (args: SpiderArguments) =
     interface ISpider with
@@ -53,9 +53,16 @@ type KonachanSpider (args: SpiderArguments) =
                         with e -> 
                             result <- Error e
                             retry <- retry - 1
-                    match result with           // Bug Here
+                            System.Threading.Thread.Sleep 5000
+                    match result with
                     | Ok x -> x
-                    | Error e -> raise e)       // Do not raise here
+                    | Error e -> 
+                        printfn "- Konachan Spider"
+                        printfn "Page Parsing Error:"
+                        printfn "Page: %d" pageId
+                        printfn "Spider: %s" <| Spider.name spider
+                        printfn "%A" e
+                        PostParser.Posts(0, 0, [||]))
             let head = Seq.head pages
             let pages = Seq.append [head] <| Seq.tail pages
             let count = (Seq.head pages).Count
@@ -69,7 +76,10 @@ type KonachanSpider (args: SpiderArguments) =
                         fromSpider = spider
                         rating = parseRating x.Rating
                     
-                        score = x.Score |> float |> ValueSome
+                        score = 
+                            try x.Score |> float |> ValueSome
+                            with _ -> ValueNone
+
                         sourceUrl = seq { 
                             sprintf args.sourceUrlFormat (args.sourceUrlDomain |> Option.defaultValue args.domain) <| uint64 x.Id
                             if x.Source.IsSome then 
@@ -90,22 +100,25 @@ type KonachanSpider (args: SpiderArguments) =
                                     fileName = Utils.getFileNameFromUrl x.FileUrl
                                 }
 
-                                let attrs = x.XElement.Attributes()
-                                if attrs |> Seq.exists (fun x -> x.Name.LocalName = "jpeg_url") then
+                                if x.JpegUrl.IsSome then
                                     {
-                                        imageUrl = x.JpegUrl
-                                        fileName = Utils.getFileNameFromUrl x.JpegUrl
+                                        imageUrl = x.JpegUrl.Value
+                                        fileName = Utils.getFileNameFromUrl x.JpegUrl.Value
                                     }
 
-                                if attrs |> Seq.exists (fun x -> x.Name.LocalName = "sample_url") then
+                                if x.SampleUrl.IsSome then
                                     {
-                                        imageUrl = x.SampleUrl
-                                        fileName = Utils.getFileNameFromUrl x.SampleUrl
+                                        imageUrl = x.SampleUrl.Value
+                                        fileName = Utils.getFileNameFromUrl x.SampleUrl.Value
                                     }
                             }
                         }
                     }
-                with _ -> None)
+                with e -> 
+                    printfn "- Konachan Spider"
+                    printfn "Post Parsing Error: %A" e
+                    printfn "Post: %u" x.Id
+                    None)
 
 let Konachan = KonachanSpider { 
     name = "Konachan"
@@ -166,9 +179,9 @@ let HypnoHub = KonachanSpider {
 let Spiders : ISpider list = [
     Konachan
     //Lolibooru     // 这个网站提供的XML非常怪异，充满了各种奇怪的字符导致报错
-    //Gelbooru      // Break at page 21
+    //Gelbooru
     Yandere
-    TheBigImageBoard
+    //TheBigImageBoard
     Safebooru
     //HypnoHub      // Break
 ]

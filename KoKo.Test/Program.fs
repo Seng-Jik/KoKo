@@ -89,4 +89,4 @@ let completeTest (spider: #ISpider) =
     |> ignore
     printfn "OK")*)
 
-completeTest Konachan.Yandere
+completeTest Konachan.Gelbooru
