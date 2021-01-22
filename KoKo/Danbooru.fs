@@ -84,7 +84,7 @@ type DanbooruSpider (name, domain) =
                     None)
        
 let Danbooru = DanbooruSpider ("Danbooru", "https://danbooru.donmai.us")
-let ATFBooru = DanbooruSpider ("ATFBooru", "https://booru.allthefallen.moe/")
+let ATFbooru = DanbooruSpider ("ATFbooru", "https://booru.allthefallen.moe/")
 
 let Spiders : ISpider list = [
     //Danbooru
