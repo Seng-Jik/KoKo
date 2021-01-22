@@ -178,10 +178,10 @@ let HypnoHub = KonachanSpider {
 
 let Spiders : ISpider list = [
     //Konachan
-    //Lolibooru     // 这个网站提供的XML非常怪异，充满了各种奇怪的字符导致报错
+    //Lolibooru
     Gelbooru
     Yandere
     //TheBigImageBoard
     //Safebooru
-    HypnoHub      // Break
+    HypnoHub
 ]
