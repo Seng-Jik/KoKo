@@ -10,8 +10,13 @@ if Directory.Exists "downloads" then
     Directory.Delete ("downloads", true)
 Directory.CreateDirectory "downloads" |> ignore
 
+let completeTest (spider: #ISpider) =
+    for post in spider.All do
+        File.AppendAllLines("downloads/complete_test_" + spider.Name + ".csv", 
+            [$"{spider.Name}, {post.id}, {string post.rating}, {post.sourceUrl |> Seq.head}"])
+        printfn "%s %u" spider.Name post.id
 
-Spiders
+(*Spiders
 |> List.toArray
 |> Array.Parallel.map (fun spider ->
     let name = Spider.name spider
@@ -81,4 +86,6 @@ Spiders
     |> Async.Parallel
     |> Async.RunSynchronously
     |> ignore
-    printfn "OK")
+    printfn "OK")*)
+
+completeTest Konachan.Yandere
