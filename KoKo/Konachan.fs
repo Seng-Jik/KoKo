@@ -177,11 +177,11 @@ let HypnoHub = KonachanSpider {
 }
 
 let Spiders : ISpider list = [
-    //Konachan
-    //Lolibooru
+    Konachan
+    Lolibooru
     Gelbooru
     Yandere
-    //TheBigImageBoard
-    //Safebooru
+    TheBigImageBoard
+    Safebooru
     HypnoHub
 ]

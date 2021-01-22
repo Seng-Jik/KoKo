@@ -87,6 +87,6 @@ let Danbooru = DanbooruSpider ("Danbooru", "https://danbooru.donmai.us")
 let ATFbooru = DanbooruSpider ("ATFbooru", "https://booru.allthefallen.moe/")
 
 let Spiders : ISpider list = [
-    //Danbooru
-    //ATFBooru
+    Danbooru
+    ATFbooru
 ]
