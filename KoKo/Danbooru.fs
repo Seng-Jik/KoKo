@@ -26,9 +26,16 @@ type DanbooruSpider (name, domain) =
                         with e -> 
                             result <- Error e
                             retry <- retry - 1
+                            System.Threading.Thread.Sleep 5000
                     match result with
                     | Ok x -> x.Posts
-                    | Error e -> [||])   // TODO: Report x
+                    | Error e -> 
+                        printfn "- Danbooru Spider"
+                        printfn "Page Parsing Error:"
+                        printfn "Page: %d" pageId
+                        printfn "Spider: %s" <| Spider.name spider
+                        printfn "%A" e
+                        [||])   // TODO: Report x
                 |> Seq.takeWhile (fun x -> x.Length > 0)    // Bug Here.
                 |> Seq.concat
             
@@ -39,7 +46,9 @@ type DanbooruSpider (name, domain) =
                         id = uint64 x.Id.Value
                         fromSpider = spider
                         rating = Konachan.parseRating x.Rating
-                        score = x.Score.Value |> float |> ValueSome
+                        score = 
+                            try x.Score.Value |> float |> ValueSome
+                            with _ -> ValueNone
 
                         sourceUrl = seq {
                             sprintf "%s/posts/%u" domain <| uint64 x.Id.Value
@@ -68,7 +77,11 @@ type DanbooruSpider (name, domain) =
                             }
                         }
                     } 
-                with _ -> None)
+                with e -> 
+                    printfn "- Danbooru Spider"
+                    printfn "Post Parsing Error: %A" e
+                    printfn "Post: %d" x.Id.Value
+                    None)
        
 let Danbooru = DanbooruSpider ("Danbooru", "https://danbooru.donmai.us")
 let ATFBooru = DanbooruSpider ("ATFBooru", "https://booru.allthefallen.moe/")
