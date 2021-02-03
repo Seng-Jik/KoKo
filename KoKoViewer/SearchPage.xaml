@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="KoKoViewer.SearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KoKoViewer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Name="MainStackPanel">
+        
+        <TextBox 
+            VerticalAlignment="Center" 
+            PlaceholderText="Tags..."
+            HorizontalAlignment="Center"
+            Name="SearchBox"
+            Width="500"/>
+
+        <TextBlock> </TextBlock>
+        <TextBlock>Rating:</TextBlock>
+        <CheckBox IsChecked="True" Name="Safe">Safe</CheckBox>
+        <CheckBox IsChecked="True" Name="Questionable">Questionable</CheckBox>
+        <CheckBox IsChecked="True" Name="Explicit">Explicit</CheckBox>
+        <CheckBox IsChecked="True" Name="Unknown">Unknown</CheckBox>
+
+        <TextBlock> </TextBlock>
+        <TextBlock>Spiders:</TextBlock>
+
+        <TextBlock> </TextBlock>
+        <Button 
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Style="{ThemeResource ButtonRevealStyle}"
+            Width="500"
+            Click="Search_Click">
+            Search</Button>
+        
+        
+
+    </StackPanel>
+</Page>

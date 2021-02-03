@@ -2,9 +2,7 @@ open KoKo
 
 open System.IO
 
-let Spiders = 
-    Danbooru.Spiders
-    @ Konachan.Spiders
+let Spiders = KoKo.AllSpiders.AllSpiders
 
 if Directory.Exists "downloads" then
     Directory.Delete ("downloads", true)
