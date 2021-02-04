@@ -9,27 +9,29 @@
     xmlns:koko="using:KoKo"
     mc:Ignorable="d">
 
-    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Name="MainStackPanel">
+    <ScrollViewer>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Name="MainStackPanel">
 
-        <TextBlock> </TextBlock>
-        <AutoSuggestBox 
-            VerticalAlignment="Center" 
-            PlaceholderText="Tags..."
-            HorizontalAlignment="Center"
-            Name="SearchBox"
-            QueryIcon="Find"
-            Width="500"
-            QuerySubmitted="Search_Click"/>
+            <TextBlock> </TextBlock>
+            <AutoSuggestBox 
+                VerticalAlignment="Center" 
+                PlaceholderText="Tags..."
+                HorizontalAlignment="Center"
+                Name="SearchBox"
+                QueryIcon="Find"
+                Width="500"
+                QuerySubmitted="Search_Click"/>
 
-        <TextBlock> </TextBlock>
-        <TextBlock>Rating:</TextBlock>
-        <CheckBox IsChecked="True" Name="Safe">Safe</CheckBox>
-        <CheckBox IsChecked="True" Name="Questionable">Questionable</CheckBox>
-        <CheckBox IsChecked="True" Name="Explicit">Explicit</CheckBox>
-        <CheckBox IsChecked="True" Name="Unknown">Unknown</CheckBox>
+            <TextBlock> </TextBlock>
+            <TextBlock>Rating:</TextBlock>
+            <CheckBox IsChecked="True" Name="Safe">Safe</CheckBox>
+            <CheckBox IsChecked="True" Name="Questionable">Questionable</CheckBox>
+            <CheckBox IsChecked="True" Name="Explicit">Explicit</CheckBox>
+            <CheckBox IsChecked="True" Name="Unknown">Unknown</CheckBox>
 
-        <TextBlock> </TextBlock>
-        <TextBlock>Spiders:</TextBlock>
+            <TextBlock> </TextBlock>
+            <TextBlock>Spiders:</TextBlock>
 
-    </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

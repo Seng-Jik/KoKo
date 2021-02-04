@@ -31,13 +31,19 @@ namespace KoKoViewer
         {
             this.InitializeComponent();
 
+            var settings = SearchSettings.Load();
+            Safe.IsChecked = settings.RatingSafe;
+            Questionable.IsChecked = settings.RatingQuestionable;
+            Explicit.IsChecked = settings.RatingExplicit;
+            Unknown.IsChecked = settings.RatingUnknown;
+
             int index = 10;
             foreach(var spider in KoKo.AllSpiders.AllSpiders)
             {
                 var checkBox = new CheckBox()
                 {
                     Content = spider.Name,
-                    IsChecked = false,
+                    IsChecked = settings.Spiders.Contains(spider.Name.Trim()),
                     Tag = spider
                 };
 
@@ -53,14 +59,21 @@ namespace KoKoViewer
 
         private void Search_Click(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
         {
-            tabViewItem.Header = SearchBox.Text;
-            if (String.IsNullOrWhiteSpace(tabViewItem.Header as string))
-                tabViewItem.Header = "Browser"; 
-
             bool safe = Safe.IsChecked.GetValueOrDefault(false);
             bool questionable = Questionable.IsChecked.GetValueOrDefault(false);
             bool exp = Explicit.IsChecked.GetValueOrDefault(false);
             bool unknown = Unknown.IsChecked.GetValueOrDefault(false);
+
+            var settings = new SearchSettings();
+            settings.RatingSafe = safe;
+            settings.RatingQuestionable = questionable;
+            settings.RatingExplicit = exp;
+            settings.RatingUnknown = unknown;
+
+            // Search
+            tabViewItem.Header = SearchBox.Text;
+            if (String.IsNullOrWhiteSpace(tabViewItem.Header as string))
+                tabViewItem.Header = "Browser"; 
 
             var spiders = new List<KoKo.ISpider>();
             foreach(var checkbox in MainStackPanel.Children)
@@ -73,10 +86,13 @@ namespace KoKoViewer
                         if(c.Tag is KoKo.ISpider)
                         {
                             spiders.Add(c.Tag as KoKo.ISpider);
+                            settings.Spiders.Add((c.Tag as KoKo.ISpider).Name.Trim());
                         }
                     }
                 }
             }
+
+            settings.Save();
 
             string tags = SearchBox.Text;
 
