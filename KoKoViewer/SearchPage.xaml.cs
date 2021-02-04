@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -73,7 +74,9 @@ namespace KoKoViewer
             // Search
             tabViewItem.Header = SearchBox.Text;
             if (String.IsNullOrWhiteSpace(tabViewItem.Header as string))
-                tabViewItem.Header = "Browser"; 
+                tabViewItem.Header = "Browser";
+
+            tabViewItem.IconSource = new SymbolIconSource() { Symbol = Symbol.BrowsePhotos };
 
             var spiders = new List<KoKo.ISpider>();
             foreach(var checkbox in MainStackPanel.Children)

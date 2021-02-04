@@ -72,7 +72,7 @@ namespace KoKoViewer
         private void NewPage(TabView sender, object args)
         {
             var newTab = new TabViewItem();
-            newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Document };
+            newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Find };
             newTab.Header = "Search";
 
             // The Content of a TabViewItem is often a frame which hosts a page.

@@ -56,7 +56,7 @@ namespace KoKoViewer
             var post = (sender as Image).Tag as KoKo.Post;
 
             var newTab = new TabViewItem();
-            newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Document };
+            newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Pictures };
             newTab.Header = post.fromSpider.Name + " " + post.id;
 
             // The Content of a TabViewItem is often a frame which hosts a page.
