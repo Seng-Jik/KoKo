@@ -77,5 +77,11 @@ namespace KoKoViewer
 
             MainPage.Get().InsertTabViewAfterCurrent(newTab);
         }
+
+        private async void FlyoutSourceList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var uri = new Uri(e.ClickedItem as string);
+            await Windows.System.Launcher.LaunchUriAsync(uri);
+        }
     }
 }

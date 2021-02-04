@@ -24,6 +24,7 @@
             ItemsSource="{x:Bind posts}"
             ShowsScrollingPlaceholders="True"
             IsItemClickEnabled="True"
+            SelectionMode="None"
             ItemClick="Browser_ItemClick">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="local:KoKoViewerPost">
