@@ -33,3 +33,16 @@ Anime wallpaper downloader.
 ## 目前问题
 * Yandere报告的图片数量（posts标签的count属性）远远小于其实际图片数量
 * Gelbooru需要登录后才可查看20000后的图片
+
+## KoKoViewer
+KoKoViewer是KoKo的使用UWP的GUI实现，提供了基本的浏览功能。    
+
+### 后续工作
+- [ ] 收藏夹
+- [ ] 下载图片
+- [ ] 支持播放视频
+
+### 如何安装
+1. 下载Release包后解压并运行Install.ps1，此脚本将会引导你打开Windows的“开发人员模式”并安装KoKoViewer，此后便可在开始菜单找到。
+2. 到“设置” - “网络和Internet” - “WLAN” - “选择能够使用你的WLAN数据的应用”中打开KoKoViewer，如果没有这个选项则可以无视此条，也可能需要到其它位置打开KoKoViewer的网络权限。
+3. 使用[Windows Loopback Exemption Manager](https://github.com/Richasy/Windows-Loopback-Exemption-Manager)解除KoKoViewer的网络回环限制。
