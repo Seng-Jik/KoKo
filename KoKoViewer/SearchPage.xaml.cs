@@ -21,6 +21,14 @@ using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 
 namespace KoKoViewer
 {
+
+    public struct SearchOption
+    {
+        public bool Safe, Questionable, Explicit, Unknown;
+        public string SearchString;
+        public List<KoKo.ISpider> Spiders;
+    }
+
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
@@ -58,59 +66,26 @@ namespace KoKoViewer
             tabViewItem = e.Parameter as TabViewItem;
         }
 
-        private void Search_Click(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
+        public static void Search(SearchOption searchOption, ref TabViewItem searchTab)
         {
-            bool safe = Safe.IsChecked.GetValueOrDefault(false);
-            bool questionable = Questionable.IsChecked.GetValueOrDefault(false);
-            bool exp = Explicit.IsChecked.GetValueOrDefault(false);
-            bool unknown = Unknown.IsChecked.GetValueOrDefault(false);
+            searchTab.Header = searchOption.SearchString;
+            if (String.IsNullOrWhiteSpace(searchTab.Header as string))
+                searchTab.Header = "Browser";
 
-            var settings = new SearchSettings();
-            settings.RatingSafe = safe;
-            settings.RatingQuestionable = questionable;
-            settings.RatingExplicit = exp;
-            settings.RatingUnknown = unknown;
-
-            // Search
-            tabViewItem.Header = SearchBox.Text;
-            if (String.IsNullOrWhiteSpace(tabViewItem.Header as string))
-                tabViewItem.Header = "Browser";
-
-            tabViewItem.IconSource = new SymbolIconSource() { Symbol = Symbol.BrowsePhotos };
-
-            var spiders = new List<KoKo.ISpider>();
-            foreach(var checkbox in MainStackPanel.Children)
-            {
-                if(checkbox is CheckBox)
-                {
-                    var c = checkbox as CheckBox;
-                    if(c.Tag != null && c.IsChecked.GetValueOrDefault(false))
-                    {
-                        if(c.Tag is KoKo.ISpider)
-                        {
-                            spiders.Add(c.Tag as KoKo.ISpider);
-                            settings.Spiders.Add((c.Tag as KoKo.ISpider).Name.Trim());
-                        }
-                    }
-                }
-            }
-
-            settings.Save();
-
-            string tags = SearchBox.Text;
+            searchTab.IconSource = new SymbolIconSource() { Symbol = Symbol.BrowsePhotos };
 
             Func<IEnumerable<KoKoViewerPost>> f = () =>
             {
                 var results =
-                    from i in spiders
+                    from i in searchOption.Spiders
                     select (
-                        from post in i.Search(tags)
+                        from post in i.Search(searchOption.SearchString)
                         where (
-                            (post.rating == KoKo.Rating.Safe && safe) ||
-                            (post.rating == KoKo.Rating.Questionable && questionable) ||
-                            (post.rating == KoKo.Rating.Explicit && exp) ||
-                            (post.rating == KoKo.Rating.Unknown && unknown))
-                        where (Microsoft.FSharp.Core.OptionModule.IsSome(post.previewImage))
+                            (post.rating == KoKo.Rating.Safe && searchOption.Safe) ||
+                            (post.rating == KoKo.Rating.Questionable && searchOption.Questionable) ||
+                            (post.rating == KoKo.Rating.Explicit && searchOption.Explicit) ||
+                            (post.rating == KoKo.Rating.Unknown && searchOption.Unknown))
+                        where (OptionModule.IsSome(post.previewImage))
                         select post);
                 var posts = new KoKo.Utils.MixEnumerable<KoKo.Post>(results.ToArray());
                 var postEnum =
@@ -128,7 +103,54 @@ namespace KoKoViewer
                 return postEnum;
             };
 
-            Frame.Navigate(typeof(BrowsePage), new BrowsePostSequence(f));
+            (searchTab.Content as Frame).Navigate(typeof(BrowsePage), Tuple.Create(new BrowsePostSequence(f), searchOption));
+        }
+
+        private void Search_Click(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
+        {
+            bool safe = Safe.IsChecked.GetValueOrDefault(false);
+            bool questionable = Questionable.IsChecked.GetValueOrDefault(false);
+            bool exp = Explicit.IsChecked.GetValueOrDefault(false);
+            bool unknown = Unknown.IsChecked.GetValueOrDefault(false);
+
+            var settings = new SearchSettings();
+            settings.RatingSafe = safe;
+            settings.RatingQuestionable = questionable;
+            settings.RatingExplicit = exp;
+            settings.RatingUnknown = unknown;
+
+            // Search
+            var searchOption = new SearchOption()
+            {
+                Safe = safe,
+                Questionable = questionable,
+                Explicit = exp,
+                Unknown = unknown,
+                SearchString = SearchBox.Text,
+                Spiders = new List<KoKo.ISpider>()
+            };
+            
+
+            var spiders = new List<KoKo.ISpider>();
+            foreach(var checkbox in MainStackPanel.Children)
+            {
+                if(checkbox is CheckBox)
+                {
+                    var c = checkbox as CheckBox;
+                    if(c.Tag != null && c.IsChecked.GetValueOrDefault(false))
+                    {
+                        if(c.Tag is KoKo.ISpider)
+                        {
+                            searchOption.Spiders.Add(c.Tag as KoKo.ISpider);
+                            settings.Spiders.Add((c.Tag as KoKo.ISpider).Name.Trim());
+                        }
+                    }
+                }
+            }
+
+            settings.Save();
+
+            Search(searchOption, ref tabViewItem);
         }
     }
 }

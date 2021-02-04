@@ -6,8 +6,7 @@
     xmlns:koko="using:KoKo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Loaded="Page_Loaded">
+    mc:Ignorable="d">
 
 
     <Grid>
@@ -23,7 +22,9 @@
             Grid.ColumnSpan="2"
             Name="Browser" 
             ItemsSource="{x:Bind posts}"
-            ShowsScrollingPlaceholders="True">
+            ShowsScrollingPlaceholders="True"
+            IsItemClickEnabled="True"
+            ItemClick="Browser_ItemClick">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="local:KoKoViewerPost">
                     <Image 
@@ -31,7 +32,6 @@
                         Tag="{x:Bind post}"
                         Stretch="Uniform"
                         Width="256"
-                        Tapped="Image_Tapped"
                         x:Phase="1"/>
                 </DataTemplate>
             </GridView.ItemTemplate>

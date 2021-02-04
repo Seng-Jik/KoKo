@@ -25,14 +25,42 @@
             HorizontalScrollMode="Enabled"
             HorizontalContentAlignment="Center"
             ZoomMode="Enabled">
-        
+
             <Image 
                 Name="MainImage"
                 Source="{x:Bind imageUrl}"
                 Stretch="Uniform"
                 HorizontalAlignment="Center"
-                ImageOpened="MainImage_ImageOpened"/>
-        
+                ImageOpened="MainImage_ImageOpened"
+                Tapped="MainImage_Tapped">
+
+                <FlyoutBase.AttachedFlyout>
+                    <Flyout Placement="Full">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{x:Bind post.fromSpider.Name}"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind post.id}"/>
+                            </Grid>
+                            <TextBlock> </TextBlock>
+                            <TextBlock>Tags:</TextBlock>
+                            <ListView ItemsSource="{x:Bind post.tags}" Name="FlyoutTagList" ItemClick="FlyoutTagList_ItemClick" IsItemClickEnabled="True">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <TextBlock Text="{x:Bind Trim()}" Tag="{x:Bind Trim()}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Flyout>
+                </FlyoutBase.AttachedFlyout>
+
+            </Image>
+
         </ScrollViewer>
     </Grid>
 </Page>

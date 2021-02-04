@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Data;
 
 namespace KoKoViewer
 {
-    sealed class BrowsePostSequence : ObservableCollection<KoKoViewerPost>, ISupportIncrementalLoading
+    public sealed class BrowsePostSequence : ObservableCollection<KoKoViewerPost>, ISupportIncrementalLoading
     {
         Func<IEnumerable<KoKoViewerPost>> creator;
         IEnumerator<KoKoViewerPost> iter;

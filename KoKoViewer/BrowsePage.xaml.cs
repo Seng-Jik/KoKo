@@ -33,6 +33,7 @@ namespace KoKoViewer
     public sealed partial class BrowsePage : Page
     {
         BrowsePostSequence posts;
+        SearchOption searchOption;
 
         public BrowsePage()
         {
@@ -44,16 +45,18 @@ namespace KoKoViewer
             base.OnNavigatedTo(e);
 
             
-            posts = e.Parameter as BrowsePostSequence;
+            var p = (Tuple<BrowsePostSequence, SearchOption>)e.Parameter;
+            posts = p.Item1;
+            searchOption = p.Item2;
             posts.CollectionChanged += (o, ee) =>
             {
                 ProgressRing.Visibility = Visibility.Collapsed;
             };
         }
 
-        private void Image_Tapped(object sender, TappedRoutedEventArgs e)
+        private void Browser_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var post = (sender as Image).Tag as KoKo.Post;
+            var post = ((KoKoViewerPost)e.ClickedItem).post;
 
             var newTab = new TabViewItem();
             newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Pictures };
@@ -62,14 +65,10 @@ namespace KoKoViewer
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
             newTab.Content = frame;
-            frame.Navigate(typeof(Viewer), post);
+            frame.Navigate(typeof(Viewer), Tuple.Create(post, searchOption));
 
-            MainPage.GetMainTabView().TabItems.Add(newTab);
-            MainPage.GetMainTabView().SelectedItem = newTab;
-        }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
+            MainPage.Get().InsertTabViewAfterCurrent(newTab);
         }
     }
 }

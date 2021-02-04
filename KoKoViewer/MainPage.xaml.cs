@@ -53,6 +53,20 @@ namespace KoKoViewer
             return page.MainTabView;
         }
 
+        public void InsertTabViewAfterCurrent(TabViewItem item)
+        {
+            try
+            {
+                MainTabView.TabItems.Insert(MainTabView.SelectedIndex + 1, item);
+            }
+            catch(Exception)
+            {
+                MainTabView.TabItems.Add(item);
+            }
+
+            MainPage.GetMainTabView().SelectedItem = item;
+        }
+
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
         {
             if (FlowDirection == FlowDirection.LeftToRight)
