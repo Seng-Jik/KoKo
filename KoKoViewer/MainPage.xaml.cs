@@ -27,8 +27,10 @@ namespace KoKoViewer
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        static MainPage page;
         public MainPage()
         {
+            page = this;
             this.InitializeComponent();
 
             var titleBar = CoreApplication.GetCurrentView().TitleBar;
@@ -39,6 +41,16 @@ namespace KoKoViewer
             var titleBar2 = ApplicationView.GetForCurrentView().TitleBar; 
             titleBar2.ButtonBackgroundColor = Colors.Transparent;
             titleBar2.ButtonInactiveBackgroundColor = Colors.Transparent;
+        }
+
+        public static MainPage Get()
+        {
+            return page;
+        }
+
+        public static TabView GetMainTabView()
+        {
+            return page.MainTabView;
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
@@ -69,6 +81,7 @@ namespace KoKoViewer
             frame.Navigate(typeof(SearchPage), newTab);
 
             sender.TabItems.Add(newTab);
+            sender.SelectedItem = newTab;
         }
 
         // Remove the requested tab from the TabView
@@ -83,6 +96,12 @@ namespace KoKoViewer
         private void TabView_Loaded(object sender, RoutedEventArgs e)
         {
             NewPage(sender as TabView, new object());
+        }
+
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            MainTabView.Width = ActualWidth;
+            MainTabView.Height = ActualHeight;
         }
     }
 }

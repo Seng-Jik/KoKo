@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,13 +31,13 @@ namespace KoKoViewer
         {
             this.InitializeComponent();
 
-            int index = 9;
+            int index = 10;
             foreach(var spider in KoKo.AllSpiders.AllSpiders)
             {
                 var checkBox = new CheckBox()
                 {
                     Content = spider.Name,
-                    IsChecked = true,
+                    IsChecked = false,
                     Tag = spider
                 };
 
@@ -50,9 +51,12 @@ namespace KoKoViewer
             tabViewItem = e.Parameter as TabViewItem;
         }
 
-        private void Search_Click(object sender, RoutedEventArgs e)
+        private void Search_Click(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
         {
             tabViewItem.Header = SearchBox.Text;
+            if (String.IsNullOrWhiteSpace(tabViewItem.Header as string))
+                tabViewItem.Header = "Browser"; 
+
             bool safe = Safe.IsChecked.GetValueOrDefault(false);
             bool questionable = Questionable.IsChecked.GetValueOrDefault(false);
             bool exp = Explicit.IsChecked.GetValueOrDefault(false);
@@ -74,18 +78,38 @@ namespace KoKoViewer
                 }
             }
 
-            var results = 
-                from i in spiders
-                select (
-                    from post in i.Search(SearchBox.Text) 
-                    where (
-                        (post.rating == KoKo.Rating.Safe && safe) ||
-                        (post.rating == KoKo.Rating.Questionable && questionable) ||
-                        (post.rating == KoKo.Rating.Explicit && exp) ||
-                        (post.rating == KoKo.Rating.Unknown && unknown))
-                    select post);
+            string tags = SearchBox.Text;
 
-            var search = new KoKo.Utils.MixEnumerable<KoKo.Post>(results.ToArray());
+            Func<IEnumerable<KoKoViewerPost>> f = () =>
+            {
+                var results =
+                    from i in spiders
+                    select (
+                        from post in i.Search(tags)
+                        where (
+                            (post.rating == KoKo.Rating.Safe && safe) ||
+                            (post.rating == KoKo.Rating.Questionable && questionable) ||
+                            (post.rating == KoKo.Rating.Explicit && exp) ||
+                            (post.rating == KoKo.Rating.Unknown && unknown))
+                        where (Microsoft.FSharp.Core.OptionModule.IsSome(post.previewImage))
+                        select post);
+                var posts = new KoKo.Utils.MixEnumerable<KoKo.Post>(results.ToArray());
+                var postEnum =
+                    from post in posts
+                    select (
+                        new KoKoViewerPost()
+                        {
+                            post = post,
+                            previewImageUrl =
+                                OptionModule.DefaultValue("",
+                                    OptionModule.Map(
+                                        FSharpFunc<KoKo.Image, string>.FromConverter(x => x.imageUrl),
+                                        post.previewImage))
+                        });
+                return postEnum;
+            };
+
+            Frame.Navigate(typeof(BrowsePage), new BrowsePostSequence(f));
         }
     }
 }

@@ -5,5 +5,5 @@ let AllSpiders =
         Konachan.Spiders
         Danbooru.Spiders
     ]
-    |> List.concat
+    |> Seq.concat
 

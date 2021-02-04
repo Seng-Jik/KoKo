@@ -6,16 +6,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:koko="using:KoKo"
     mc:Ignorable="d">
 
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Name="MainStackPanel">
-        
-        <TextBox 
+
+        <TextBlock> </TextBlock>
+        <AutoSuggestBox 
             VerticalAlignment="Center" 
             PlaceholderText="Tags..."
             HorizontalAlignment="Center"
             Name="SearchBox"
-            Width="500"/>
+            QueryIcon="Find"
+            Width="500"
+            QuerySubmitted="Search_Click"/>
 
         <TextBlock> </TextBlock>
         <TextBlock>Rating:</TextBlock>
@@ -26,17 +30,6 @@
 
         <TextBlock> </TextBlock>
         <TextBlock>Spiders:</TextBlock>
-
-        <TextBlock> </TextBlock>
-        <Button 
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Style="{ThemeResource ButtonRevealStyle}"
-            Width="500"
-            Click="Search_Click">
-            Search</Button>
-        
-        
 
     </StackPanel>
 </Page>

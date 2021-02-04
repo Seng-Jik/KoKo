@@ -119,12 +119,19 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BrowsePostSequence.cs" />
+    <Compile Include="BrowsePage.xaml.cs">
+      <DependentUpon>BrowsePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Viewer.xaml.cs">
+      <DependentUpon>Viewer.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -147,11 +154,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="BrowsePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Viewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

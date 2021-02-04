@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="KoKoViewer.BrowsePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KoKoViewer"
+    xmlns:koko="using:KoKo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="Page_Loaded">
+
+
+    <Grid>
+        <ProgressRing 
+            VerticalAlignment="Center" 
+            IsActive="True"
+            HorizontalAlignment="Center"
+            Name="ProgressRing"/>
+
+        <GridView 
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Name="Browser" 
+            ItemsSource="{x:Bind posts}"
+            ShowsScrollingPlaceholders="True">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="local:KoKoViewerPost">
+                    <Image 
+                        Source="{x:Bind previewImageUrl}" 
+                        Tag="{x:Bind post}"
+                        Stretch="Uniform"
+                        Width="256"
+                        Tapped="Image_Tapped"
+                        x:Phase="1"/>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+    </Grid>
+
+</Page>
