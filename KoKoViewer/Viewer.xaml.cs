@@ -64,8 +64,6 @@ namespace KoKoViewer
 
         private void MainImage_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var bitmap = (MainImage.Source as BitmapImage);
-            DisplayResolution.Text = $"{bitmap.PixelWidth}x{bitmap.PixelHeight}";
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
 
@@ -99,6 +97,31 @@ namespace KoKoViewer
 
             ProgressRing.IsActive = true;
             ProgressRing.Visibility = Visibility.Visible;
+        }
+
+        private void Flyout_Star_Click(object sender, RoutedEventArgs e)
+        {
+            if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
+                FavoritesData.Get().Remove(post.fromSpider.Name, post.id);
+            else FavoritesData.Get().Add(post.fromSpider.Name, post.id);
+
+            Flyout_Opening(null, null);
+        }
+
+        private void Flyout_Opening(object sender, object e)
+        {
+            var bitmap = (MainImage.Source as BitmapImage);
+            DisplayResolution.Text = $"{bitmap.PixelWidth}x{bitmap.PixelHeight}";
+
+            if (post.score.IsValueSome)
+            {
+                DisplayScore.Text = $" Score:{post.score.Value}";
+            }
+
+            if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
+                Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.SolidStar };
+            else
+                Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.OutlineStar };
         }
     }
 }

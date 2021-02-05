@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using System.Collections.ObjectModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -103,7 +104,7 @@ namespace KoKoViewer
                 return postEnum;
             };
 
-            (searchTab.Content as Frame).Navigate(typeof(BrowsePage), Tuple.Create(new BrowsePostSequence(f), searchOption));
+            (searchTab.Content as Frame).Navigate(typeof(BrowsePage), Tuple.Create(new BrowsePostSequence(f) as ObservableCollection<KoKoViewerPost>, searchOption));
         }
 
         private void Search_Click(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)

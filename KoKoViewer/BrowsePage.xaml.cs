@@ -16,6 +16,7 @@ using Microsoft.FSharp.Core;
 using Microsoft.UI.Xaml.Controls;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -32,7 +33,7 @@ namespace KoKoViewer
     /// </summary>
     public sealed partial class BrowsePage : Page
     {
-        BrowsePostSequence posts;
+        ObservableCollection<KoKoViewerPost> posts;
         SearchOption searchOption;
 
         public BrowsePage()
@@ -45,7 +46,7 @@ namespace KoKoViewer
             base.OnNavigatedTo(e);
 
             
-            var p = (Tuple<BrowsePostSequence, SearchOption>)e.Parameter;
+            var p = (Tuple<ObservableCollection<KoKoViewerPost>, SearchOption>)e.Parameter;
             posts = p.Item1;
             searchOption = p.Item2;
             posts.CollectionChanged += (o, ee) =>

@@ -35,7 +35,7 @@
                 Tapped="MainImage_Tapped">
 
                 <FlyoutBase.AttachedFlyout>
-                    <Flyout Placement="Full" x:Name="Flyout">
+                    <Flyout Placement="Full" x:Name="Flyout" Opening="Flyout_Opening">
                         <StackPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -51,7 +51,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Text="{x:Bind post.fromSpider.Name}"/>
                                 <TextBlock VerticalAlignment="Center" Grid.Column="4" Grid.Row="0" Text="{x:Bind post.id}"/>
-                                <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Name="DisplayResolution"/>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Name="DisplayResolution"/>
+                                <TextBlock Grid.Row="1" Grid.Column="4" Name="DisplayScore"/>
                                 <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Left">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -65,6 +66,8 @@
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}" 
                                         Height="auto" Grid.Column="1" Grid.Row="0" Icon="OutlineStar" 
+                                        Name="Flyout_Star"
+                                        Click="Flyout_Star_Click"
                                         Label="Star"/>
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}" 
