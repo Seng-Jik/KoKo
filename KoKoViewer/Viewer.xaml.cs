@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,7 +25,6 @@ namespace KoKoViewer
     /// </summary>
     public sealed partial class Viewer : Page
     {
-        string imageUrl;
         KoKo.Post post;
         SearchOption searchOption;
 
@@ -40,9 +40,17 @@ namespace KoKoViewer
             post = p.Item1;
             searchOption = p.Item2;
 
-            imageUrl = post.images.First().Last().imageUrl;
-
-            Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+            var cache = DownloadHelper.GetDownloaded(post);
+            if (cache != null)
+            {
+                Flyout_ViewLarger.IsEnabled = false;
+                ImageSource.SetSource(cache.OpenAsync(FileAccessMode.Read).AsTask().Result);
+            }
+            else
+            {
+                ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
+                Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+            }
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -80,7 +88,7 @@ namespace KoKoViewer
         private void Flyout_ViewLarger_Click(object sender, RoutedEventArgs e)
         {
             (sender as AppBarButton).IsEnabled = false;
-            imageUrl = post.images.First().First().imageUrl;
+            var imageUrl = post.images.First().First().imageUrl;
             ImageSource.UriSource = new Uri(imageUrl);
 
             Flyout.Hide();
@@ -108,6 +116,13 @@ namespace KoKoViewer
             if (post.score.IsValueSome)
             {
                 DisplayScore.Text = $" Score:{post.score.Value}";
+            }
+
+            if(DownloadHelper.GetDownloaded(post) != null)
+            {
+                Flyout_Download.IsEnabled = false;
+                Flyout_ViewLarger.IsEnabled = false;
+                Flyout_Download.Label = "Downloaded";
             }
 
             if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))

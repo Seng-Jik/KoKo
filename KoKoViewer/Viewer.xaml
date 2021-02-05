@@ -30,7 +30,6 @@
                 <Image.Source>
                     <BitmapImage 
                         x:Name="ImageSource"
-                        UriSource="{x:Bind imageUrl}" 
                         AutoPlay="True"
                         ImageOpened="BitmapImage_ImageOpened"
                         ImageFailed="ImageSource_ImageFailed"

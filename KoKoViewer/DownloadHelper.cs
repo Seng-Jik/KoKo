@@ -75,6 +75,22 @@ namespace KoKoViewer
             return toast;
         }
 
+        public static StorageFile GetDownloaded(KoKo.Post post)
+        {
+            StorageFolder applicationFolder = KnownFolders.PicturesLibrary;
+            StorageFolder folder = applicationFolder.CreateFolderAsync("KoKo Images", CreationCollisionOption.OpenIfExists).AsTask().Result;
+            var image = post.images.First().First();
+
+            try
+            {
+                return folder.GetFileAsync(KoKo.Utils.normalizeFileName(image.fileName)).AsTask().Result;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
+        }
+
         public static async void Download(KoKo.Post post)
         {
             StorageFolder applicationFolder = KnownFolders.PicturesLibrary;
