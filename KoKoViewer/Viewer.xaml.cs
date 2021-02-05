@@ -144,5 +144,11 @@ namespace KoKoViewer
             ProgressRing.IsIndeterminate = false;
             ProgressRing.Value = e.Progress;
         }
+
+        private void Flyout_Download_Click(object sender, RoutedEventArgs e)
+        {
+            Flyout_Download.IsEnabled = false;
+            DownloadHelper.Download(post);
+        }
     }
 }

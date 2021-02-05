@@ -74,6 +74,7 @@
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}" 
                                         Height="auto" Grid.Column="2" Grid.Row="0" Icon="Download" 
+                                        Name="Flyout_Download" Click="Flyout_Download_Click"
                                         Label="Download"/>
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}"
