@@ -51,16 +51,6 @@ namespace KoKoViewer
             sc.Width = ActualWidth;
             sc.Height = ActualHeight;
         }
-        private void MainImage_ImageOpened(object sender, RoutedEventArgs e)
-        {
-            ProgressRing.IsActive = false;
-            ProgressRing.Visibility = Visibility.Collapsed;
-            var ratio1 = ActualHeight / MainImage.ActualHeight;
-            var ratio2 = ActualWidth / MainImage.ActualWidth;
-            var ratio = Math.Min(ratio1, ratio2);
-            MainImage.Width = MainImage.ActualWidth * ratio;
-            MainImage.Height = MainImage.ActualHeight * ratio;
-        }
 
         private void MainImage_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -91,10 +81,12 @@ namespace KoKoViewer
         {
             (sender as AppBarButton).IsEnabled = false;
             imageUrl = post.images.First().First().imageUrl;
-            MainImage.Source = new BitmapImage(new Uri(imageUrl));
+            ImageSource.UriSource = new Uri(imageUrl);
 
             Flyout.Hide();
 
+            ProgressRing.Value = 0;
+            ProgressRing.IsIndeterminate = true;
             ProgressRing.IsActive = true;
             ProgressRing.Visibility = Visibility.Visible;
         }
@@ -122,6 +114,29 @@ namespace KoKoViewer
                 Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.SolidStar };
             else
                 Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.OutlineStar };
+        }
+
+        private void BitmapImage_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            ProgressRing.IsActive = false;
+            ProgressRing.Visibility = Visibility.Collapsed;
+            var ratio1 = ActualHeight / MainImage.ActualHeight;
+            var ratio2 = ActualWidth / MainImage.ActualWidth;
+            var ratio = Math.Min(ratio1, ratio2);
+            MainImage.Width = MainImage.ActualWidth * ratio;
+            MainImage.Height = MainImage.ActualHeight * ratio;
+        }
+
+        private void ImageSource_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            ProgressRing.IsActive = false;
+            ProgressRing.Visibility = Visibility.Collapsed;
+        }
+
+        private void ImageSource_DownloadProgress(object sender, DownloadProgressEventArgs e)
+        {
+            ProgressRing.IsIndeterminate = false;
+            ProgressRing.Value = e.Progress;
         }
     }
 }

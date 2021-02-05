@@ -5,16 +5,11 @@
     xmlns:local="using:KoKoViewer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     SizeChanged="Page_SizeChanged">
 
     <Grid>
-        <ProgressRing 
-            VerticalAlignment="Center" 
-            IsActive="True"
-            HorizontalAlignment="Center"
-            Name="ProgressRing"/>
-
         <ScrollViewer 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Auto" 
@@ -28,11 +23,19 @@
 
             <Image 
                 Name="MainImage"
-                Source="{x:Bind imageUrl}"
                 Stretch="Uniform"
                 HorizontalAlignment="Center"
-                ImageOpened="MainImage_ImageOpened"
                 Tapped="MainImage_Tapped">
+
+                <Image.Source>
+                    <BitmapImage 
+                        x:Name="ImageSource"
+                        UriSource="{x:Bind imageUrl}" 
+                        AutoPlay="True"
+                        ImageOpened="BitmapImage_ImageOpened"
+                        ImageFailed="ImageSource_ImageFailed"
+                        DownloadProgress="ImageSource_DownloadProgress"/>
+                </Image.Source>
 
                 <FlyoutBase.AttachedFlyout>
                     <Flyout Placement="Full" x:Name="Flyout" Opening="Flyout_Opening">
@@ -109,5 +112,15 @@
             </Image>
 
         </ScrollViewer>
+
+        <muxc:ProgressRing 
+            VerticalAlignment="Center" 
+            HorizontalAlignment="Center"
+            Name="ProgressRing"
+            IsActive="True"
+            IsIndeterminate="True"
+            Value="1"
+            Width="100"
+            Height="100"/>
     </Grid>
 </Page>
