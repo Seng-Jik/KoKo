@@ -16,8 +16,6 @@ Anime wallpaper downloader.
 - [x] Konachan Spider
 - [x] KoKo Downloader
 - [x] Danbooru Spider
-- [ ] 兼容MoeLoader Delta
-- [ ] 兼容MoeLoader P
 
 ## 已经较为稳定的爬虫
 * Gelbooru
