@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -40,6 +41,8 @@ namespace KoKoViewer
             searchOption = p.Item2;
 
             imageUrl = post.images.First().Last().imageUrl;
+
+            Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -61,6 +64,8 @@ namespace KoKoViewer
 
         private void MainImage_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            var bitmap = (MainImage.Source as BitmapImage);
+            DisplayResolution.Text = $"{bitmap.PixelWidth}x{bitmap.PixelHeight}";
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
 
@@ -82,6 +87,18 @@ namespace KoKoViewer
         {
             var uri = new Uri(e.ClickedItem as string);
             await Windows.System.Launcher.LaunchUriAsync(uri);
+        }
+
+        private void Flyout_ViewLarger_Click(object sender, RoutedEventArgs e)
+        {
+            (sender as AppBarButton).IsEnabled = false;
+            imageUrl = post.images.First().First().imageUrl;
+            MainImage.Source = new BitmapImage(new Uri(imageUrl));
+
+            Flyout.Hide();
+
+            ProgressRing.IsActive = true;
+            ProgressRing.Visibility = Visibility.Visible;
         }
     }
 }

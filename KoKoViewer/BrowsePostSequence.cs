@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Popups;
 using Windows.UI.Xaml.Data;
 
 namespace KoKoViewer
@@ -23,18 +24,26 @@ namespace KoKoViewer
         {
             return Task.Run(async () =>
             {
-                if (iter == null)
-                    iter = creator().GetEnumerator();
                 uint actualCount = 0;
-                for(uint i = 0; i < count;++i)
+                try
                 {
-                    HasMoreItems = iter.MoveNext();
-                    if(HasMoreItems)
+                    if (iter == null)
+                        iter = creator().GetEnumerator();
+                    for (uint i = 0; i < count; ++i)
                     {
-                        await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
-                            Add(iter.Current));
-                        actualCount++;
+                        HasMoreItems = iter.MoveNext();
+                        if (HasMoreItems)
+                        {
+                            await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                                Add(iter.Current));
+                            actualCount++;
+                        }
                     }
+                }
+                catch(Exception exn)
+                {
+                    await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, async () =>
+                        await new MessageDialog(exn.Message).ShowAsync());
                 }
                 return new LoadMoreItemsResult { Count = actualCount };
             }).AsAsyncOperation<LoadMoreItemsResult>();

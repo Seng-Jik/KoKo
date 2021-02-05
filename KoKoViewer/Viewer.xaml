@@ -35,9 +35,13 @@
                 Tapped="MainImage_Tapped">
 
                 <FlyoutBase.AttachedFlyout>
-                    <Flyout Placement="Full">
+                    <Flyout Placement="Full" x:Name="Flyout">
                         <StackPanel>
                             <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="5"/>
@@ -45,9 +49,10 @@
                                     <ColumnDefinition Width="5"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Grid.Column="2" Text="{x:Bind post.fromSpider.Name}"/>
-                                <TextBlock VerticalAlignment="Center" Grid.Column="4" Text="{x:Bind post.id}"/>
-                                <Grid Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Text="{x:Bind post.fromSpider.Name}"/>
+                                <TextBlock VerticalAlignment="Center" Grid.Column="4" Grid.Row="0" Text="{x:Bind post.id}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Name="DisplayResolution"/>
+                                <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Left">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="auto"/>
@@ -68,9 +73,12 @@
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}"
                                         Height="auto" Grid.Column="3" Grid.Row="0" Icon="ZoomIn"
+                                        x:Name="Flyout_ViewLarger"
+                                        Click="Flyout_ViewLarger_Click"
                                         Label="Larger"/>
                                 </Grid>
                             </Grid>
+
 
                             <TextBlock></TextBlock>
                             <TextBlock>Source:</TextBlock>
