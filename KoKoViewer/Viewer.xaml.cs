@@ -122,7 +122,7 @@ namespace KoKoViewer
             {
                 Flyout_Download.IsEnabled = false;
                 Flyout_ViewLarger.IsEnabled = false;
-                Flyout_Download.Label = "Downloaded";
+                Flyout_Download.Label = "OK!";
             }
 
             if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
