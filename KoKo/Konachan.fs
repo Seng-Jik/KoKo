@@ -35,6 +35,7 @@ type KonachanSpider (args: SpiderArguments) =
     interface ISpider with
         member _.Name = args.name
         member x.All = (x :> ISpider).Search ""
+        member x.GetPostById id = async { return Spider.search $"id:{id}" x |> Seq.tryHead }
         member spider.Search tags = 
             let pages =
                 Seq.initInfinite (fun pageId ->

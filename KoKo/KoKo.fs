@@ -30,6 +30,7 @@ and ISpider =
     abstract Name : string
     abstract All : Post seq
     abstract Search : string -> Post seq
+    abstract GetPostById : uint64 -> Async<Post option>
 
 module Utils =
     let downloadData (url: string) = async {
@@ -146,6 +147,7 @@ module Spider =
     let all (spider: #ISpider) = spider.All
     let search tags (spider: #ISpider) = spider.Search tags
     let name (spider: #ISpider) = spider.Name
+    let getPostById (spider: #ISpider) id = spider.GetPostById id
 
     let test (spider: #ISpider) =
         try spider.Search "" |> ignore |> Ok
