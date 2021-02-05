@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
+using Microsoft.FSharp.Control;
+using Microsoft.FSharp.Core;
+using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Linq;
 
 namespace KoKoViewer
 {
@@ -90,6 +94,38 @@ namespace KoKoViewer
             Flush();
         }
 
-        //BrowsePostSequence GetAllFavorites();
+        private static IEnumerable<KoKoViewerPost> Convert(Tuple<string, UInt64> post)
+        {
+            var s = 
+                FSharpAsync.RunSynchronously(
+                        (from spider in KoKo.AllSpiders.AllSpiders
+                         where spider.Name == post.Item1
+                         select spider).Single().GetPostById(post.Item2),
+                        FSharpOption<int>.None,
+                        FSharpOption<System.Threading.CancellationToken>.None);
+            if (OptionModule.IsSome(s))
+            {
+                if(OptionModule.IsNone(s.Value.previewImage))
+                    return SeqModule.Empty<KoKoViewerPost>();
+                var p = new KoKoViewerPost() {
+                    post = s.Value,
+                    previewImageUrl = s.Value.previewImage.Value.imageUrl
+                };
+                return SeqModule.Singleton(p);
+            }
+            else return SeqModule.Empty<KoKoViewerPost>();
+        }
+
+        public BrowsePostSequence GetAllFavoritesSequence()
+        {
+            Func<IEnumerable<KoKoViewerPost>> creator = () =>
+                SeqModule.Concat<IEnumerable<KoKoViewerPost>,KoKoViewerPost>(
+                    from post in favortiePosts
+                    select Convert(post));
+
+            var seq = new BrowsePostSequence(creator);
+
+            return seq;
+        }
     }
 }

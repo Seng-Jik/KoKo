@@ -111,9 +111,15 @@ namespace KoKoViewer
             }
 
             if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
-                Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.SolidStar };
+            {
+                Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.UnFavorite };
+                Flyout_Star.Label = "UnFavorite";
+            }
             else
-                Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.OutlineStar };
+            {
+                Flyout_Star.Icon = new SymbolIcon() { Symbol = Symbol.Favorite };
+                Flyout_Star.Label = "Favorite";
+            }
         }
 
         private void BitmapImage_ImageOpened(object sender, RoutedEventArgs e)

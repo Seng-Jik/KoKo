@@ -68,10 +68,9 @@
                                     </Grid.RowDefinitions>
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}" 
-                                        Height="auto" Grid.Column="1" Grid.Row="0" Icon="OutlineStar" 
+                                        Height="auto" Grid.Column="1" Grid.Row="0" Icon="Favorite" 
                                         Name="Flyout_Star"
-                                        Click="Flyout_Star_Click"
-                                        Label="Star"/>
+                                        Click="Flyout_Star_Click"/>
                                     <AppBarButton 
                                         Style="{ThemeResource AppBarButtonRevealStyle}" 
                                         Height="auto" Grid.Column="2" Grid.Row="0" Icon="Download" 

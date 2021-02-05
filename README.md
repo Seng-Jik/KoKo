@@ -16,7 +16,6 @@ Anime wallpaper downloader.
 - [x] Konachan Spider
 - [x] KoKo Downloader
 - [x] Danbooru Spider
-- [ ] 兼容BooruSharp
 - [ ] 兼容MoeLoader Delta
 - [ ] 兼容MoeLoader P
 
@@ -39,7 +38,7 @@ Anime wallpaper downloader.
 KoKoViewer是KoKo的使用UWP的GUI实现，提供了基本的浏览功能。    
 
 ### 后续工作
-- [ ] 收藏夹
+- [x] 收藏夹
 - [ ] 下载图片
 - [ ] 支持播放视频
 

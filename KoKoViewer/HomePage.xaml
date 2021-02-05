@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="KoKoViewer.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KoKoViewer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+
+    <muxc:NavigationView 
+        Name="Nav"
+        IsSettingsVisible="False"
+        IsBackButtonVisible="Collapsed" 
+        Background="Transparent"
+        Foreground="Transparent"
+        SelectionChanged="Nav_SelectionChanged"
+        IsPaneOpen="False">
+        <muxc:NavigationView.MenuItems>
+            <muxc:NavigationViewItem Icon="Find" Name="Nav_Search">Search</muxc:NavigationViewItem>
+            <muxc:NavigationViewItem Icon="Favorite" Name="Nav_Favorites">Favorites</muxc:NavigationViewItem>
+        </muxc:NavigationView.MenuItems>
+        <Frame x:Name="MainFrame" />
+    </muxc:NavigationView>
+</Page>
