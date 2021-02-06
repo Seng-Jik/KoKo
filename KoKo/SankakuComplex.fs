@@ -1,23 +1,7 @@
 ﻿module KoKo.SankakuComplex
 open FSharp.Data
-open System.Net
+
 type private PostParser = JsonProvider<"SankakuComplexExample.json">
-
-let private accept = """text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"""
-let private userAgent = """Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36 Edg/88.0.705.63"""
-let private downloadString (url: string) = async {
-    use webClient = new WebClient ()
-    webClient.Headers.Set(HttpRequestHeader.UserAgent, userAgent)
-    webClient.Headers.Set(HttpRequestHeader.IfNoneMatch, "\"W/\"d77e-wCeuOPL54DbvEpMg2nCyp3TSW00")
-    webClient.Headers.Set(HttpRequestHeader.CacheControl, "max-age=0")
-    webClient.Headers.Set(HttpRequestHeader.AcceptLanguage, "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5")
-    webClient.Headers.Set(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br")
-    webClient.Headers.Set(HttpRequestHeader.Accept, accept)
-
-    printfn "DS: %s" url
-    try return (Ok <| webClient.DownloadString url)
-    with e -> return (Error e)
-}
 
 type SankakuComplex () =
     interface ISpider with
@@ -32,7 +16,7 @@ type SankakuComplex () =
                     while retry > 0 do
                         try
                             sprintf "https://capi-v2.sankakucomplex.com/posts?page=%u&tags=%s" pageId tags
-                            |> downloadString
+                            |> Utils.downloadString
                             |> Async.RunSynchronously
                             |> function
                             | Error e -> raise e
