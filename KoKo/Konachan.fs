@@ -29,7 +29,7 @@ let parseRating = function
 | _ -> Unknown
 
 
-type PostParser = XmlProvider<"KonachanExample.xml">
+type private PostParser = XmlProvider<"KonachanExample.xml">
 
 type KonachanSpider (args: SpiderArguments) =
     interface ISpider with

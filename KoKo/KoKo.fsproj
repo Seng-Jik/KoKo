@@ -10,6 +10,8 @@
     <Compile Include="KoKo.fs" />
     <Compile Include="Konachan.fs" />
     <Content Include="KonachanExample.xml" />
+    <Compile Include="SankakuComplex.fs" />
+    <Content Include="SankakuComplexExample.json" />
     <Compile Include="Danbooru.fs" />
     <Content Include="DanbooruExample.xml" />
     <Compile Include="AllSpiders.fs" />

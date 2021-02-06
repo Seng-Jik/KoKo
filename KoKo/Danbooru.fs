@@ -2,7 +2,7 @@
 
 open FSharp.Data
 
-type PostParser = XmlProvider<"DanbooruExample.xml">
+type private PostParser = XmlProvider<"DanbooruExample.xml">
 
 type DanbooruSpider (name, domain) =
     interface ISpider with

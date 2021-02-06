@@ -30,7 +30,7 @@
             <CheckBox IsChecked="True" Name="Unknown">Unknown</CheckBox>
 
             <TextBlock> </TextBlock>
-            <TextBlock>Spiders:</TextBlock>
+            <TextBlock>Sources:</TextBlock>
 
         </StackPanel>
     </ScrollViewer>

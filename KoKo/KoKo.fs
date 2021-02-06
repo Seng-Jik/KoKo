@@ -48,9 +48,13 @@ module Utils =
     }
 
     let getFileNameFromUrl (url: string) =
-        let url = url.Replace('\\', '/')
-        url.[1 + url.LastIndexOf '/'..] 
-        |> System.Web.HttpUtility.UrlDecode
+        let nameWithParam =
+            let url = url.Replace('\\', '/')
+            url.[1 + url.LastIndexOf '/'..] 
+            |> System.Web.HttpUtility.UrlDecode
+        let paramStart = nameWithParam.IndexOf '?'
+        if paramStart < 0 then nameWithParam
+        else nameWithParam.[..paramStart-1]
 
     let normalizeFileName (x: string) = 
         [":";"*";"!";"#";"?";"%";"<";">";"|";"\"";"\\";"/";"\"";"\'"]
