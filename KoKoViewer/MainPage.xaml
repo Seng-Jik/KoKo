@@ -17,7 +17,7 @@
         <muxc:TabView 
             Grid.Row="0"
             Loaded="TabView_Loaded"
-            AddTabButtonClick="NewPage"
+            AddTabButtonClick="MainTabView_AddTabButtonClick"
             TabCloseRequested="ClosePage"
             Name="MainTabView"
             TabWidthMode="SizeToContent">

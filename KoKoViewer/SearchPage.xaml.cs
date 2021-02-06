@@ -64,7 +64,9 @@ namespace KoKoViewer
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            tabViewItem = e.Parameter as TabViewItem;
+            var param = e.Parameter as Tuple<TabViewItem, string>;
+            tabViewItem = param.Item1;
+            SearchBox.Text = param.Item2;
         }
 
         public static void Search(SearchOption searchOption, ref TabViewItem searchTab)

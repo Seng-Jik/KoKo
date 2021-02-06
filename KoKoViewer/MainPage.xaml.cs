@@ -84,17 +84,17 @@ namespace KoKoViewer
             CustomDragRegion.Height = ShellTitlebarInset.Height = sender.Height;
         }
 
-        private void NewPage(TabView sender, object args)
+        public void NewPage(string initSearchKeyword)
         {
             var newTab = new TabViewItem();
 
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
             newTab.Content = frame;
-            frame.Navigate(typeof(HomePage), newTab);
+            frame.Navigate(typeof(HomePage), Tuple.Create(newTab, initSearchKeyword));
 
-            sender.TabItems.Add(newTab);
-            sender.SelectedItem = newTab;
+            MainTabView.TabItems.Add(newTab);
+            MainTabView.SelectedItem = newTab;
         }
 
         // Remove the requested tab from the TabView
@@ -108,13 +108,18 @@ namespace KoKoViewer
 
         private void TabView_Loaded(object sender, RoutedEventArgs e)
         {
-            NewPage(sender as TabView, null);
+            NewPage("");
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             MainTabView.Width = ActualWidth;
             MainTabView.Height = ActualHeight;
+        }
+
+        private void MainTabView_AddTabButtonClick(TabView sender, object args)
+        {
+            NewPage("");
         }
     }
 }

@@ -34,18 +34,23 @@ namespace KoKoViewer
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            tabViewItem = e.Parameter as TabViewItem;
+            var param = e.Parameter as Tuple<TabViewItem, string>;
+            tabViewItem = param.Item1;
+            initSearchKeyword = param.Item2;
 
             Nav.SelectedItem = Nav_Search;
         }
 
+        string initSearchKeyword = "";
         private void Nav_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
         {
             if (Nav_Search.IsSelected)
             {
-                MainFrame.Navigate(typeof(SearchPage), tabViewItem);
+                MainFrame.Navigate(typeof(SearchPage), Tuple.Create(tabViewItem, initSearchKeyword));
                 tabViewItem.Header = "Search";
                 tabViewItem.IconSource = new SymbolIconSource() { Symbol = Symbol.Find };
+
+                initSearchKeyword = "";
             }
 
             else if(Nav_Favorites.IsSelected)

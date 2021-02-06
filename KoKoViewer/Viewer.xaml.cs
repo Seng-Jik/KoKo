@@ -122,16 +122,7 @@ namespace KoKoViewer
 
         private void FlyoutTagList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var newTab = new TabViewItem();
-            var search = searchOption;
-            search.SearchString = e.ClickedItem as string;
-
-            // The Content of a TabViewItem is often a frame which hosts a page.
-            Frame frame = new Frame();
-            newTab.Content = frame;
-            SearchPage.Search(search, ref newTab);
-
-            MainPage.Get().InsertTabViewAfterCurrent(newTab);
+            MainPage.Get().NewPage(e.ClickedItem as string + " ");
         }
 
         private async void FlyoutSourceList_ItemClick(object sender, ItemClickEventArgs e)
