@@ -185,6 +185,22 @@ let Behoimi = KonachanSpider {
     sourceUrlDomain = None
 }
 
+let XBooru = KonachanSpider {
+    name = "XBooru"
+    domain = "https://xbooru.com"
+    requestFormat = RequestFormats.Gelbooru
+    sourceUrlFormat = SourceUrlFormats.Gelbooru
+    sourceUrlDomain = None
+}
+
+let Rule34 = KonachanSpider {
+    name = "Rule34"
+    domain = "https://rule34.xxx"
+    requestFormat = RequestFormats.Gelbooru
+    sourceUrlFormat = SourceUrlFormats.Gelbooru
+    sourceUrlDomain = None
+}
+
 let Spiders : ISpider list = [
     Konachan
     Lolibooru
@@ -193,5 +209,7 @@ let Spiders : ISpider list = [
     TheBigImageBoard
     Safebooru
     HypnoHub
-    Behoimi
+    //Behoimi   // 被反爬
+    XBooru
+    Rule34
 ]

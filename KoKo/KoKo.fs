@@ -34,10 +34,10 @@ and ISpider =
     abstract GetPostById : uint64 -> Async<Post option>
 
 module Utils =
-    let private userAgent = """Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36 Edg/88.0.705.63"""
+    let UserAgent = """Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36 Edg/88.0.705.63"""
     let downloadData (url: string) = async {
         use webClient = new System.Net.WebClient ()
-        webClient.Headers.Set (HttpRequestHeader.UserAgent, userAgent)
+        webClient.Headers.Set (HttpRequestHeader.UserAgent, UserAgent)
         printfn "DD: %s" url
         try return (Ok <| webClient.DownloadData url)
         with e -> return (Error e)
@@ -45,7 +45,7 @@ module Utils =
 
     let downloadString (url: string) = async {
         use webClient = new System.Net.WebClient ()
-        webClient.Headers.Set (HttpRequestHeader.UserAgent, userAgent)
+        webClient.Headers.Set (HttpRequestHeader.UserAgent, UserAgent)
         printfn "DS: %s" url
         try return (Ok <| webClient.DownloadString url)
         with e -> return (Error e)
