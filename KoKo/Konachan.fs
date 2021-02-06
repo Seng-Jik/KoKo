@@ -177,6 +177,14 @@ let HypnoHub = KonachanSpider {
     sourceUrlDomain = None
 }
 
+let Behoimi = KonachanSpider {
+    name = "3dbooru"
+    domain = "http://behoimi.org"
+    requestFormat = RequestFormats.HypnoHub
+    sourceUrlFormat = SourceUrlFormats.Konachan
+    sourceUrlDomain = None
+}
+
 let Spiders : ISpider list = [
     Konachan
     Lolibooru
@@ -185,4 +193,5 @@ let Spiders : ISpider list = [
     TheBigImageBoard
     Safebooru
     HypnoHub
+    Behoimi
 ]
