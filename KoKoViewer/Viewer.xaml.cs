@@ -85,8 +85,16 @@ namespace KoKoViewer
                 }
                 else
                 {
-                    ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
-                    Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+                    if (post.images.First().First().fileName.ToLower().EndsWith(".gif"))
+                    {
+                        ImageSource.UriSource = new Uri(post.images.First().First().imageUrl);
+                        Flyout_ViewLarger.IsEnabled = false;
+                    }
+                    else
+                    {
+                        ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
+                        Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+                    }
                 }
             }
         }
