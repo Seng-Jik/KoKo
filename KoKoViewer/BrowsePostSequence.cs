@@ -40,6 +40,7 @@ namespace KoKoViewer
                         }
                     }
                 }
+                catch (InvalidOperationException) { }
                 catch(Exception exn)
                 {
                     await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, async () =>

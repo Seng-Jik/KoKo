@@ -10,7 +10,12 @@
 
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
         <ProgressRing 
+            Grid.Row="0"
             VerticalAlignment="Center" 
             IsActive="True"
             HorizontalAlignment="Center"
@@ -18,13 +23,14 @@
 
         <GridView 
             Grid.Row="0"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
             Name="Browser" 
             ItemsSource="{x:Bind posts}"
             ShowsScrollingPlaceholders="True"
             IsItemClickEnabled="True"
             SelectionMode="None"
+            SelectionChanged="Browser_SelectionChanged"
+            IsRightTapEnabled="True"
+            RightTapped="Browser_RightTapped"
             ItemClick="Browser_ItemClick">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="local:KoKoViewerPost">
@@ -37,6 +43,15 @@
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
+
+        <CommandBar OverflowButtonVisibility="Collapsed" IsOpen="False" ClosedDisplayMode="Hidden" IsSticky="True" Grid.Row="1" Name="MutiSelectionCommandBar">
+            <AppBarButton Icon="Find" Label="Open" Click="MutiSelectionCommandBar_OpenThese_Click" />
+            <AppBarButton Icon="Favorite" Label="Favorite" Click="MutiSelectionCommandBar_FavoriteThese_Click" />
+            <AppBarButton Icon="UnFavorite" Label="UnFavorite" Click="MutiSelectionCommandBar_UnFavoriteThese_Click" />
+            <AppBarButton Icon="Download" Label="Download" Click="MutiSelectionCommandBar_Download_Click"/>
+            <AppBarButton Icon="Like" Label="Fav&amp;Down" Click="MutiSelectionCommandBar_FavDownload_Click"/>
+            <AppBarButton Icon="Cancel" Label="Cancel" Click="MutiSelectionCommandBar_Cancel_Click"/>
+        </CommandBar>
     </Grid>
 
 </Page>

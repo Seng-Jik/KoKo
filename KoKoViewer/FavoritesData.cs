@@ -87,6 +87,34 @@ namespace KoKoViewer
             Flush();
         }
 
+        public void AddSome(IEnumerable<Tuple<string, UInt64>> some)
+        {
+            foreach(var i in some)
+            {
+                if(!Has(i.Item1, i.Item2))
+                {
+                    favortiePosts.Insert(0, i);
+                    favoritePostSet.Add(i);
+                }
+            }
+
+            Flush();
+        }
+
+        public void RemoveSome(IEnumerable<Tuple<string, UInt64>> some)
+        {
+            foreach (var i in some)
+            {
+                if (Has(i.Item1, i.Item2))
+                {
+                    favortiePosts.Remove(i);
+                    favoritePostSet.Remove(i);
+                }
+            }
+
+            Flush();
+        }
+
         public void Remove(string spiderName, UInt64 id)
         {
             favortiePosts.Remove(Tuple.Create(spiderName, id));

@@ -57,19 +57,123 @@ namespace KoKoViewer
 
         private void Browser_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var post = ((KoKoViewerPost)e.ClickedItem).post;
+            if (!selectionMode)
+            {
+                var post = ((KoKoViewerPost)e.ClickedItem).post;
 
-            var newTab = new TabViewItem();
-            newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Pictures };
-            newTab.Header = post.fromSpider.Name + " " + post.id;
+                var newTab = new TabViewItem();
+                newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Pictures };
+                newTab.Header = post.fromSpider.Name + " " + post.id;
 
-            // The Content of a TabViewItem is often a frame which hosts a page.
-            Frame frame = new Frame();
-            newTab.Content = frame;
-            frame.Navigate(typeof(Viewer), Tuple.Create(post, searchOption, newTab));
+                // The Content of a TabViewItem is often a frame which hosts a page.
+                Frame frame = new Frame();
+                newTab.Content = frame;
+                frame.Navigate(typeof(Viewer), Tuple.Create(post, searchOption, newTab));
 
 
-            MainPage.Get().InsertTabViewAfterCurrent(newTab);
+                MainPage.Get().InsertTabViewAfterCurrent(newTab);
+            }
+        }
+
+        bool selectionModeInner = false;
+        bool selectionMode
+        {
+            get => selectionModeInner;
+            set {
+                selectionModeInner = value;
+                MutiSelectionCommandBar.IsOpen = value;
+                if (value)
+                {
+                    Browser.SelectionMode = ListViewSelectionMode.Multiple;
+                    MutiSelectionCommandBar.IsEnabled = false;
+                }
+                else
+                {
+                    Browser.SelectedItems.Clear();
+                    Browser.SelectionMode = ListViewSelectionMode.None;
+                    MutiSelectionCommandBar.IsEnabled = false;
+                }
+            }
+        }
+        private void Browser_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            selectionMode = !selectionMode;
+        }
+
+        private void Browser_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            MutiSelectionCommandBar.IsEnabled = Browser.SelectedItems.Count > 0;
+        }
+
+        private void MutiSelectionCommandBar_OpenThese_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var i in Browser.SelectedItems)
+            {
+                var post = ((KoKoViewerPost)i).post;
+
+                var newTab = new TabViewItem();
+                newTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Pictures };
+                newTab.Header = post.fromSpider.Name + " " + post.id;
+
+                // The Content of a TabViewItem is often a frame which hosts a page.
+                Frame frame = new Frame();
+                newTab.Content = frame;
+                frame.Navigate(typeof(Viewer), Tuple.Create(post, searchOption, newTab));
+
+
+                MainPage.Get().InsertTabViewAfterCurrent(newTab, false);
+            }
+            selectionMode = false;
+        }
+
+        private void MutiSelectionCommandBar_FavoriteThese_Click(object sender, RoutedEventArgs e)
+        {
+            FavoritesData.Get().AddSome(
+                from post in Browser.SelectedItems
+                select (Tuple.Create(
+                    ((KoKoViewerPost)post).post.fromSpider.Name,
+                    ((KoKoViewerPost)post).post.id)));
+            selectionMode = false;
+        }
+
+        private void MutiSelectionCommandBar_UnFavoriteThese_Click(object sender, RoutedEventArgs e)
+        {
+            FavoritesData.Get().RemoveSome(
+                from post in Browser.SelectedItems
+                select (Tuple.Create(
+                    ((KoKoViewerPost)post).post.fromSpider.Name,
+                    ((KoKoViewerPost)post).post.id)));
+            selectionMode = false;
+        }
+
+        private void MutiSelectionCommandBar_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            selectionMode = false;
+        }
+
+        private void MutiSelectionCommandBar_Download_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var i in Browser.SelectedItems)
+            {
+                var post = ((KoKoViewerPost)i).post;
+                DownloadHelper.Download(post);
+            }
+            selectionMode = false;
+        }
+
+        private void MutiSelectionCommandBar_FavDownload_Click(object sender, RoutedEventArgs e)
+        {
+            FavoritesData.Get().AddSome(
+                from post in Browser.SelectedItems
+                select (Tuple.Create(
+                    ((KoKoViewerPost)post).post.fromSpider.Name,
+                    ((KoKoViewerPost)post).post.id)));
+            foreach (var i in Browser.SelectedItems)
+            {
+                var post = ((KoKoViewerPost)i).post;
+                DownloadHelper.Download(post);
+            }
+            selectionMode = false;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace KoKoViewer
             return page.MainTabView;
         }
 
-        public void InsertTabViewAfterCurrent(TabViewItem item)
+        public void InsertTabViewAfterCurrent(TabViewItem item, bool jumpTo = true)
         {
             try
             {
@@ -64,7 +64,8 @@ namespace KoKoViewer
                 MainTabView.TabItems.Add(item);
             }
 
-            MainPage.GetMainTabView().SelectedItem = item;
+            if(jumpTo)
+                MainPage.GetMainTabView().SelectedItem = item;
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
