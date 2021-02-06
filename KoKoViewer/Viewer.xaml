@@ -9,11 +9,12 @@
     mc:Ignorable="d"
     SizeChanged="Page_SizeChanged">
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <ScrollViewer 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Auto" 
             Name="ScrollViewer"
+            x:Load="False"
             VerticalContentAlignment="Center"
             HorizontalAlignment="Center"
             VerticalScrollMode="Enabled"
@@ -35,91 +36,103 @@
                         ImageFailed="ImageSource_ImageFailed"
                         DownloadProgress="ImageSource_DownloadProgress"/>
                 </Image.Source>
-
-                <FlyoutBase.AttachedFlyout>
-                    <Flyout Placement="Full" x:Name="Flyout" Opening="Flyout_Opening">
-                        <StackPanel>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="5"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="5"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Text="{x:Bind post.fromSpider.Name}"/>
-                                <TextBlock VerticalAlignment="Center" Grid.Column="4" Grid.Row="0" Text="{x:Bind post.id}"/>
-                                <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Name="DisplayResolution"/>
-                                <TextBlock Grid.Row="1" Grid.Column="4" Name="DisplayScore"/>
-                                <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Left">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="64"/>
-                                    </Grid.RowDefinitions>
-                                    <AppBarButton 
-                                        Style="{ThemeResource AppBarButtonRevealStyle}" 
-                                        Height="auto" Grid.Column="1" Grid.Row="0" Icon="Favorite" 
-                                        Name="Flyout_Star"
-                                        Click="Flyout_Star_Click"/>
-                                    <AppBarButton 
-                                        Style="{ThemeResource AppBarButtonRevealStyle}" 
-                                        Height="auto" Grid.Column="2" Grid.Row="0" Icon="Download" 
-                                        Name="Flyout_Download" Click="Flyout_Download_Click"
-                                        Label="Download"/>
-                                    <AppBarButton 
-                                        Style="{ThemeResource AppBarButtonRevealStyle}"
-                                        Height="auto" Grid.Column="3" Grid.Row="0" Icon="ZoomIn"
-                                        x:Name="Flyout_ViewLarger"
-                                        Click="Flyout_ViewLarger_Click"
-                                        Label="Larger"/>
-                                </Grid>
-                            </Grid>
-
-
-                            <TextBlock></TextBlock>
-                            <TextBlock>Source:</TextBlock>
-                            <ListView ItemsSource="{x:Bind post.sourceUrl}" Name="FlyoutSourceList" SelectionMode="None" IsItemClickEnabled="True" ItemClick="FlyoutSourceList_ItemClick">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="x:String">
-                                        <TextBlock Text="{x:Bind Trim()}" Tag="{x:Bind Trim()}"/>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-
-                            <TextBlock> </TextBlock>
-                            <TextBlock>Tags:</TextBlock>
-                            <ListView ItemsSource="{x:Bind post.tags}" Name="FlyoutTagList" SelectionMode="None" ItemClick="FlyoutTagList_ItemClick" IsItemClickEnabled="True">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="x:String">
-                                        <TextBlock Text="{x:Bind Trim()}" Tag="{x:Bind Trim()}"/>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </StackPanel>
-                    </Flyout>
-                </FlyoutBase.AttachedFlyout>
-
             </Image>
 
         </ScrollViewer>
+
+        <MediaPlayerElement 
+            x:Load="False"
+            AreTransportControlsEnabled="True"
+            Tapped="MediaPlayer_Tapped"
+            Name="MediaPlayer"
+            AutoPlay="False"
+            Stretch="Uniform"
+            IsTapEnabled="True"
+            RightTapped="MediaPlayer_RightTapped"
+            IsDoubleTapEnabled="True"
+            DoubleTapped="MediaPlayer_DoubleTapped"
+            IsRightTapEnabled="True"/>
 
         <muxc:ProgressRing 
             VerticalAlignment="Center" 
             HorizontalAlignment="Center"
             Name="ProgressRing"
-            IsActive="True"
+            IsActive="False"
             IsIndeterminate="True"
             Value="1"
             Width="100"
             Height="100"/>
+
+        <FlyoutBase.AttachedFlyout>
+            <Flyout Placement="Full" x:Name="Flyout" Opening="Flyout_Opening">
+                <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Text="{x:Bind post.fromSpider.Name}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Column="4" Grid.Row="0" Text="{x:Bind post.id}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Name="DisplayResolution"/>
+                        <TextBlock Grid.Row="1" Grid.Column="4" Name="DisplayScore"/>
+                        <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="64"/>
+                            </Grid.RowDefinitions>
+                            <AppBarButton 
+                                        Style="{ThemeResource AppBarButtonRevealStyle}" 
+                                        Height="auto" Grid.Column="1" Grid.Row="0" Icon="Favorite" 
+                                        Name="Flyout_Star"
+                                        Click="Flyout_Star_Click"/>
+                            <AppBarButton 
+                                        Style="{ThemeResource AppBarButtonRevealStyle}" 
+                                        Height="auto" Grid.Column="2" Grid.Row="0" Icon="Download" 
+                                        Name="Flyout_Download" Click="Flyout_Download_Click"
+                                        Label="Download"/>
+                            <AppBarButton 
+                                        Style="{ThemeResource AppBarButtonRevealStyle}"
+                                        Height="auto" Grid.Column="3" Grid.Row="0" Icon="ZoomIn"
+                                        x:Name="Flyout_ViewLarger"
+                                        Click="Flyout_ViewLarger_Click"
+                                        Label="Larger"/>
+                        </Grid>
+                    </Grid>
+
+
+                    <TextBlock></TextBlock>
+                    <TextBlock>Source:</TextBlock>
+                    <ListView ItemsSource="{x:Bind post.sourceUrl}" Name="FlyoutSourceList" SelectionMode="None" IsItemClickEnabled="True" ItemClick="FlyoutSourceList_ItemClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <TextBlock Text="{x:Bind Trim()}" Tag="{x:Bind Trim()}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <TextBlock></TextBlock>
+                    <TextBlock>Tags:</TextBlock>
+                    <ListView ItemsSource="{x:Bind post.tags}" Name="FlyoutTagList" SelectionMode="None" ItemClick="FlyoutTagList_ItemClick" IsItemClickEnabled="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <TextBlock Text="{x:Bind Trim()}" Tag="{x:Bind Trim()}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </Flyout>
+        </FlyoutBase.AttachedFlyout>
     </Grid>
 </Page>

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.Threading;
 
 namespace KoKoViewer
 {
@@ -24,6 +25,9 @@ namespace KoKoViewer
             string title = "KoKo Viewer";
             string content = $"{post.fromSpider.Name} {post.id} Downloaded.";
             string image = "file://" + path;
+
+            if (path.ToLower().EndsWith(".mp4") || path.ToLower().EndsWith(".webm"))
+                image = post.previewImage.Value.imageUrl;
 
             string visualXml = $@"
             <visual><binding template='ToastGeneric'><image src='{image}' /><text>{title}</text><text>{content}</text></binding></visual>";
@@ -41,9 +45,10 @@ namespace KoKoViewer
         {
             string title = "KoKo Viewer";
             string content = $"{post.fromSpider.Name} {post.id} Download failed: {message}";
+            string image = post.previewImage.Value.imageUrl;
 
             string visualXml = $@"
-            <visual><binding template='ToastGeneric'><text>{title}</text><text>{content}</text></binding></visual>";
+            <visual><binding template='ToastGeneric'><image src='{image}' /><text>{title}</text><text>{content}</text></binding></visual>";
 
             string toastXml = $@"<toast>{visualXml}</toast>";
 
@@ -83,7 +88,9 @@ namespace KoKoViewer
 
             try
             {
-                return folder.GetFileAsync(KoKo.Utils.normalizeFileName(image.fileName)).AsTask().Result;
+                var a = folder.GetFileAsync(KoKo.Utils.normalizeFileName(image.fileName)).AsTask().Result;
+                var size = a.GetBasicPropertiesAsync().AsTask().Result.Size;
+                return size > 0 ? a : null;
             }
             catch(Exception)
             {
@@ -105,8 +112,11 @@ namespace KoKoViewer
                 var toast = ToastProgress(post);
                 client.DownloadProgressChanged += (ooo, eee) =>
                 {
-                    toast.Data.Values["progressValue"] = ((double)eee.BytesReceived / (double)eee.TotalBytesToReceive).ToString();
-                    notifier.Update(toast.Data, toast.Tag);
+                    MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        toast.Data.Values["progressValue"] = ((double)eee.BytesReceived / (double)eee.TotalBytesToReceive).ToString();
+                        notifier.Update(toast.Data, toast.Tag);
+                    }).AsTask().Wait();
                 };
 
                 client.DownloadDataCompleted += async (ooo2, eee2) =>
@@ -119,11 +129,11 @@ namespace KoKoViewer
 
                     notifier.Hide(toast);
                     ToastFinished(post, path.Path);
+
+                    (ooo2 as IDisposable).Dispose();
                 };
 
-                client.DownloadDataAsync(new Uri(image.imageUrl));
-
-                client.Dispose();
+                new Thread(() => client.DownloadDataAsync(new Uri(image.imageUrl))).Start();
             }
             catch(Exception e)
             {

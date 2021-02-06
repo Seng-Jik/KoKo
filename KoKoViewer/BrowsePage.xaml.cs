@@ -66,7 +66,7 @@ namespace KoKoViewer
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
             newTab.Content = frame;
-            frame.Navigate(typeof(Viewer), Tuple.Create(post, searchOption));
+            frame.Navigate(typeof(Viewer), Tuple.Create(post, searchOption, newTab));
 
 
             MainPage.Get().InsertTabViewAfterCurrent(newTab);

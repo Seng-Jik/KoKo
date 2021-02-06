@@ -36,33 +36,80 @@ namespace KoKoViewer
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            var p = (Tuple<KoKo.Post, SearchOption>)e.Parameter;
+            var p = (Tuple<KoKo.Post, SearchOption, TabViewItem>)e.Parameter;
             post = p.Item1;
             searchOption = p.Item2;
+            var tabViewItem = p.Item3;
 
             var cache = DownloadHelper.GetDownloaded(post);
-            if (cache != null)
+
+            if (post.images.First().First().fileName.ToLower().EndsWith(".mp4") || post.images.First().First().fileName.ToLower().EndsWith(".webm"))
             {
+                // 如果是视频
                 Flyout_ViewLarger.IsEnabled = false;
-                ImageSource.SetSource(cache.OpenAsync(FileAccessMode.Read).AsTask().Result);
+                FindName("MediaPlayer");
+                MediaPlayer.MediaPlayer.IsLoopingEnabled = true;
+                MediaPlayer.MediaPlayer.AutoPlay = false;
+                MediaPlayer.TransportControls.ShowAndHideAutomatically = false;
+                MediaPlayer.TransportControls.IsCompact = true;
+                MediaPlayer.TransportControls.IsSkipBackwardButtonVisible = true;
+                MediaPlayer.TransportControls.IsSkipForwardButtonVisible = true;
+                MediaPlayer.TransportControls.IsSkipForwardEnabled = true;
+                MediaPlayer.TransportControls.IsSkipBackwardEnabled = true;
+                MediaPlayer.TransportControls.IsZoomButtonVisible = true;
+                MediaPlayer.TransportControls.IsZoomEnabled = true;
+                tabViewItem.CloseRequested += (o, ee) =>
+                {
+                    MediaPlayer.MediaPlayer.Pause();
+                    MediaPlayer.MediaPlayer.Dispose();
+                };
+
+                if (cache != null)
+                {
+                    MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromStorageFile(cache);
+                }
+                else
+                {
+                    MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(post.images.First().First().imageUrl));
+                }
             }
             else
             {
-                ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
-                Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+                // 如果是图片
+                FindName("ScrollViewer");
+                ProgressRing.IsActive = true;
+                if (cache != null)
+                {
+                    Flyout_ViewLarger.IsEnabled = false;
+                    ImageSource.SetSource(cache.OpenAsync(FileAccessMode.Read).AsTask().Result);
+                }
+                else
+                {
+                    ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
+                    Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+                }
             }
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var sc = ScrollViewer;
-            sc.Width = ActualWidth;
-            sc.Height = ActualHeight;
+            if (sc != null && sc.IsLoaded)
+            {
+                sc.Width = ActualWidth;
+                sc.Height = ActualHeight;
+            }
+
+            if(MediaPlayer != null && MediaPlayer.IsLoaded)
+            {
+                MediaPlayer.Width = ActualWidth;
+                MediaPlayer.Height = ActualHeight;
+            }
         }
 
         private void MainImage_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+            FlyoutBase.ShowAttachedFlyout(MainGrid);
         }
 
         private void FlyoutTagList_ItemClick(object sender, ItemClickEventArgs e)
@@ -110,8 +157,15 @@ namespace KoKoViewer
 
         private void Flyout_Opening(object sender, object e)
         {
-            var bitmap = (MainImage.Source as BitmapImage);
-            DisplayResolution.Text = $"{bitmap.PixelWidth}x{bitmap.PixelHeight}";
+            if (MainImage != null && MainImage.IsLoaded)
+            {
+                DisplayResolution.Text = $"{ImageSource.PixelWidth}x{ImageSource.PixelHeight}";
+            }
+            else if (MediaPlayer != null && MediaPlayer.IsLoaded)
+            {
+                //DisplayResolution.Text = $"{MediaPlayer.}x{MediaPlayer.NaturalVideoHeight}";
+            }
+            else DisplayResolution.Text = "";
 
             if (post.score.IsValueSome)
             {
@@ -164,6 +218,26 @@ namespace KoKoViewer
         {
             Flyout_Download.IsEnabled = false;
             DownloadHelper.Download(post);
+        }
+
+        bool mediaPlayerTransportControlShown = true;
+        private void MediaPlayer_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (!mediaPlayerTransportControlShown)
+                MediaPlayer.TransportControls.Show();
+            else MediaPlayer.TransportControls.Hide();
+
+            mediaPlayerTransportControlShown = !mediaPlayerTransportControlShown;
+        }
+
+        private void MediaPlayer_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout(MainGrid);
+        }
+
+        private void MediaPlayer_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout(MainGrid);
         }
     }
 }
