@@ -156,7 +156,8 @@ namespace KoKoViewer
             foreach (var i in Browser.SelectedItems)
             {
                 var post = ((KoKoViewerPost)i).post;
-                DownloadHelper.Download(post);
+                if (DownloadHelper.GetDownloaded(post) == null)
+                    DownloadHelper.Download(post);
             }
             selectionMode = false;
         }
@@ -171,9 +172,32 @@ namespace KoKoViewer
             foreach (var i in Browser.SelectedItems)
             {
                 var post = ((KoKoViewerPost)i).post;
-                DownloadHelper.Download(post);
+                if (DownloadHelper.GetDownloaded(post) == null)
+                    DownloadHelper.Download(post);
             }
             selectionMode = false;
+        }
+
+        private void Image_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var post = image.Tag as KoKo.Post;
+
+            var parent = image.Parent as Grid;
+
+            if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
+                parent.FindName("Info_Fav");
+
+            if (DownloadHelper.GetDownloaded(post) != null)
+                parent.FindName("Info_Downloaded");
+
+            var imageName = post.images.First().First().fileName.ToLower().Trim();
+
+            if (imageName.EndsWith(".gif"))
+                image.FindName("Info_GIF");
+
+            if (imageName.EndsWith(".mp4") || imageName.EndsWith(".webm"))
+                image.FindName("Info_Video");
         }
     }
 }

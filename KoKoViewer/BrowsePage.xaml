@@ -34,12 +34,29 @@
             ItemClick="Browser_ItemClick">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="local:KoKoViewerPost">
-                    <Image 
-                        Source="{x:Bind previewImageUrl}" 
-                        Tag="{x:Bind post}"
-                        Stretch="Uniform"
-                        Width="256"
-                        x:Phase="1"/>
+                    <Grid Tag="{x:Bind post}">
+                        <Image 
+                            Source="{x:Bind previewImageUrl}" 
+                            Tag="{x:Bind post}"
+                            Stretch="Uniform"
+                            Width="256"
+                            ImageOpened="Image_ImageOpened"
+                            x:Phase="1"/>
+                        <StackPanel 
+                            VerticalAlignment="Top"
+                            Background="Black"
+                            Opacity="0.7"
+                            HorizontalAlignment="Left">
+                            <SymbolIcon 
+                                Symbol="Favorite" x:Name="Info_Fav" x:Load="False"/>
+                            <SymbolIcon
+                                Symbol="Download" x:Name="Info_Downloaded" x:Load="False"/>
+                            <SymbolIcon
+                                Symbol="Play" x:Name="Info_GIF" x:Load="False"/>
+                            <SymbolIcon
+                                Symbol="Video" x:Name="Info_Video" x:Load="False"/>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
