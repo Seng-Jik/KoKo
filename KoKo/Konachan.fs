@@ -201,6 +201,15 @@ let Rule34 = KonachanSpider {
     sourceUrlDomain = None
 }
 
+let Realbooru = KonachanSpider {
+    name = "Realbooru"
+    domain = "https://realbooru.com"
+    requestFormat = RequestFormats.Gelbooru
+    sourceUrlFormat = SourceUrlFormats.Gelbooru
+    sourceUrlDomain = None
+}
+
+
 let Spiders : ISpider list = [
     Konachan
     Lolibooru
@@ -212,4 +221,5 @@ let Spiders : ISpider list = [
     //Behoimi   // 被反爬
     XBooru
     Rule34
+    Realbooru
 ]
