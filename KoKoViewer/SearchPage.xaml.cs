@@ -88,7 +88,8 @@ namespace KoKoViewer
                             (post.rating == KoKo.Rating.Unknown && searchOption.Unknown))
                         where (OptionModule.IsSome(post.previewImage))
                         select post);
-                var posts = new KoKo.Utils.MixEnumerable<KoKo.Post>(results.ToArray());
+                var posts = new KoKo.Utils.MixEnumerable<KoKo.Post>(results.ToArray()) as IEnumerable<KoKo.Post>;
+                posts = KoKo.AntiGuro.antiGuro(posts);      // Anti Guro
                 var postEnum =
                     from post in posts
                     select (
@@ -131,8 +132,6 @@ namespace KoKoViewer
                 Spiders = new List<KoKo.ISpider>()
             };
             
-
-            var spiders = new List<KoKo.ISpider>();
             foreach(var checkbox in MainStackPanel.Children)
             {
                 if(checkbox is CheckBox)

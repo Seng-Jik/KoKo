@@ -77,6 +77,7 @@ async {
     posts
     |> Seq.toArray
     |> Utils.MixEnumerable
+    |> KoKo.AntiGuro.antiGuro
     |> PSeq.iter (fun post -> async { downloadPost post } |> Async.StartAsTask |> tasks.Add)
 }
 |> Async.StartAsTask

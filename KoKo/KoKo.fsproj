@@ -13,6 +13,7 @@
     <Compile Include="Danbooru.fs" />
     <Content Include="DanbooruExample.xml" />
     <Compile Include="AllSpiders.fs" />
+    <Compile Include="AntiGuro.fs" />
   </ItemGroup>
 
   <ItemGroup>
