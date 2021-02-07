@@ -240,5 +240,10 @@ namespace KoKoViewer
         {
             FlyoutBase.ShowAttachedFlyout(MainGrid);
         }
+
+        private void MainImage_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout(MainGrid);
+        }
     }
 }
