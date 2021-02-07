@@ -28,7 +28,8 @@ namespace KoKoViewer
         {
             try
             {
-                StorageFolder localFolder = ApplicationData.Current.RoamingFolder;
+                StorageFolder picFolder = KnownFolders.PicturesLibrary;
+                StorageFolder localFolder = picFolder.CreateFolderAsync("KoKo Images", CreationCollisionOption.OpenIfExists).AsTask().Result;
                 StorageFile favorite = localFolder.GetFileAsync("favorites.dat").AsTask().Result;
                 var a = FileIO.ReadBufferAsync(favorite).AsTask().Result;
                 using (var s = DataReader.FromBuffer(a))
@@ -44,7 +45,6 @@ namespace KoKoViewer
                         favoritePostSet.Add(Tuple.Create(spider, id));
                     }
                 }
-                
             }
             catch (Exception) {
             }
@@ -56,7 +56,8 @@ namespace KoKoViewer
         {
             try
             {
-                StorageFolder localFolder = ApplicationData.Current.RoamingFolder;
+                StorageFolder picFolder = KnownFolders.PicturesLibrary;
+                StorageFolder localFolder = picFolder.CreateFolderAsync("KoKo Images", CreationCollisionOption.OpenIfExists).AsTask().Result;
                 StorageFile favorite = await localFolder.CreateFileAsync("favorites.dat", CreationCollisionOption.ReplaceExisting);
                 using (var a = await favorite.OpenAsync(FileAccessMode.ReadWrite))
                 {

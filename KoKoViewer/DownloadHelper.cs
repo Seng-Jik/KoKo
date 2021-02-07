@@ -120,18 +120,24 @@ namespace KoKoViewer
                     });
                 };
 
-                client.DownloadDataCompleted += async (ooo2, eee2) =>
+                client.DownloadDataCompleted += (ooo2, eee2) =>
                 {
-                    using (var file = await path.OpenAsync(FileAccessMode.ReadWrite))
+                    new Task(async () =>
                     {
-                        await file.WriteAsync(eee2.Result.AsBuffer());
-                        await file.FlushAsync();
-                    }
+                        using (var file = await path.OpenAsync(FileAccessMode.ReadWrite))
+                        {
+                            await file.WriteAsync(eee2.Result.AsBuffer());
+                            await file.FlushAsync();
+                        }
 
-                    notifier.Hide(toast);
-                    ToastFinished(post, path.Path);
+                        await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                        {
+                            notifier.Hide(toast);
+                            ToastFinished(post, path.Path);
+                        });
 
-                    (ooo2 as IDisposable).Dispose();
+                        (ooo2 as IDisposable).Dispose();
+                    }).Start();
                 };
 
                 new Thread(() => client.DownloadDataAsync(new Uri(image.imageUrl))).Start();
