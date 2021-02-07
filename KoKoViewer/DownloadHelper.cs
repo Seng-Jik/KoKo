@@ -111,13 +111,13 @@ namespace KoKoViewer
                 client.Headers.Set(System.Net.HttpRequestHeader.UserAgent, KoKo.Utils.UserAgent);
 
                 var toast = ToastProgress(post);
-                client.DownloadProgressChanged += (ooo, eee) =>
+                client.DownloadProgressChanged += async (ooo, eee) =>
                 {
-                    MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
                         toast.Data.Values["progressValue"] = ((double)eee.BytesReceived / (double)eee.TotalBytesToReceive).ToString();
                         notifier.Update(toast.Data, toast.Tag);
-                    }).AsTask().Wait();
+                    });
                 };
 
                 client.DownloadDataCompleted += async (ooo2, eee2) =>
