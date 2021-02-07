@@ -43,7 +43,9 @@ namespace KoKoViewer
 
             var cache = DownloadHelper.GetDownloaded(post);
 
-            if (post.images.First().First().fileName.ToLower().EndsWith(".mp4") || post.images.First().First().fileName.ToLower().EndsWith(".webm"))
+            var fileName = post.images.First().First().fileName.ToLower();
+
+            if (fileName.EndsWith(".mp4") || fileName.EndsWith(".webm"))
             {
                 // 如果是视频
                 Flyout_ViewLarger.IsEnabled = false;

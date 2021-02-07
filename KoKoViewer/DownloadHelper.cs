@@ -108,6 +108,7 @@ namespace KoKoViewer
             try
             {
                 var client = new System.Net.WebClient();
+                client.Headers.Set(System.Net.HttpRequestHeader.UserAgent, KoKo.Utils.UserAgent);
 
                 var toast = ToastProgress(post);
                 client.DownloadProgressChanged += (ooo, eee) =>

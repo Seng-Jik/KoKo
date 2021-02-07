@@ -80,18 +80,26 @@ namespace KoKoViewer
         {
             get => selectionModeInner;
             set {
-                selectionModeInner = value;
-                MutiSelectionCommandBar.IsOpen = value;
-                if (value)
+                if (value != selectionModeInner)
                 {
-                    Browser.SelectionMode = ListViewSelectionMode.Multiple;
-                    MutiSelectionCommandBar.IsEnabled = false;
-                }
-                else
-                {
-                    Browser.SelectedItems.Clear();
-                    Browser.SelectionMode = ListViewSelectionMode.None;
-                    MutiSelectionCommandBar.IsEnabled = false;
+                    MutiSelectionCommandBar_OpenThese.IsEnabled = false;
+                    MutiSelectionCommandBar_FavoriteThese.IsEnabled = false;
+                    MutiSelectionCommandBar_UnFavoriteThese.IsEnabled = false;
+                    MutiSelectionCommandBar_Download.IsEnabled = false;
+                    MutiSelectionCommandBar_FavDownload.IsEnabled = false;
+
+
+                    selectionModeInner = value;
+                    MutiSelectionCommandBar.IsOpen = value;
+                    if (value)
+                    {
+                        Browser.SelectionMode = ListViewSelectionMode.Multiple;
+                    }
+                    else
+                    {
+                        Browser.SelectedItems.Clear();
+                        Browser.SelectionMode = ListViewSelectionMode.None;
+                    }
                 }
             }
         }
@@ -102,7 +110,13 @@ namespace KoKoViewer
 
         private void Browser_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MutiSelectionCommandBar.IsEnabled = Browser.SelectedItems.Count > 0;
+            bool enabled = Browser.SelectedItems.Count > 0;
+
+            MutiSelectionCommandBar_OpenThese.IsEnabled = enabled;
+            MutiSelectionCommandBar_FavoriteThese.IsEnabled = enabled;
+            MutiSelectionCommandBar_UnFavoriteThese.IsEnabled = enabled;
+            MutiSelectionCommandBar_Download.IsEnabled = enabled;
+            MutiSelectionCommandBar_FavDownload.IsEnabled = enabled;
         }
 
         private void MutiSelectionCommandBar_OpenThese_Click(object sender, RoutedEventArgs e)
@@ -183,21 +197,21 @@ namespace KoKoViewer
             var image = sender as Image;
             var post = image.Tag as KoKo.Post;
 
-            var parent = image.Parent as Grid;
+            var parent = image;
 
             if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
-                parent.FindName("Info_Fav");
+                (parent.FindName("Info_Fav") as SymbolIcon).Visibility = Visibility.Visible;
 
             if (DownloadHelper.GetDownloaded(post) != null)
-                parent.FindName("Info_Downloaded");
+                (parent.FindName("Info_Downloaded") as SymbolIcon).Visibility = Visibility.Visible;
 
             var imageName = post.images.First().First().fileName.ToLower().Trim();
 
             if (imageName.EndsWith(".gif"))
-                image.FindName("Info_GIF");
+                (parent.FindName("Info_GIF") as SymbolIcon).Visibility = Visibility.Visible;
 
-            if (imageName.EndsWith(".mp4") || imageName.EndsWith(".webm"))
-                image.FindName("Info_Video");
+            else if (imageName.EndsWith(".mp4") || imageName.EndsWith(".webm"))
+                (parent.FindName("Info_Video") as SymbolIcon).Visibility = Visibility.Visible; ;
         }
     }
 }
