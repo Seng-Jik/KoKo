@@ -30,7 +30,7 @@ namespace KoKoViewer
                 image = post.previewImage.Value.imageUrl;
 
             string visualXml = $@"
-            <visual><binding template='ToastGeneric'><image src='{image}' /><text>{title}</text><text>{content}</text></binding></visual>";
+            <visual><binding template='ToastGeneric'><image placement='hero' src='{image}' /><text>{title}</text><text>{content}</text></binding></visual>";
 
             string toastXml = $@"<toast>{visualXml}</toast>";
 
@@ -48,7 +48,7 @@ namespace KoKoViewer
             string image = post.previewImage.Value.imageUrl;
 
             string visualXml = $@"
-            <visual><binding template='ToastGeneric'><image src='{image}' /><text>{title}</text><text>{content}</text></binding></visual>";
+            <visual><binding template='ToastGeneric'><image placement='hero' src='{image}' /><text>{title}</text><text>{content}</text></binding></visual>";
 
             string toastXml = $@"<toast>{visualXml}</toast>";
 
@@ -63,7 +63,7 @@ namespace KoKoViewer
         {
             var content = new ToastContentBuilder()
                 .AddText("KoKo Viewer")
-                .AddInlineImage(new Uri(post.previewImage.Value.imageUrl))
+                .AddHeroImage(new Uri(post.previewImage.Value.imageUrl))
                 .AddVisualChild(new AdaptiveProgressBar()
                 {
                     Title = $"{post.fromSpider.Name} {post.id}",
