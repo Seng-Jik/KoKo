@@ -9,7 +9,7 @@
   <Identity
     Name="609b4b8f-a84f-4111-b119-af0006ce93d6"
     Publisher="CN=KoKo"
-    Version="0.2.4.0" />
+    Version="0.2.5.0" />
 
   <mp:PhoneIdentity PhoneProductId="609b4b8f-a84f-4111-b119-af0006ce93d6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
