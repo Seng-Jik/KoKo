@@ -44,7 +44,7 @@
                             x:Phase="1"/>
                         <StackPanel 
                             VerticalAlignment="Top"
-                            Background="White"
+                            Background="LightGray"
                             Opacity="0.7"
                             HorizontalAlignment="Left">
                             <SymbolIcon 
