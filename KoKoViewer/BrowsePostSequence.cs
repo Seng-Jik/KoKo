@@ -15,11 +15,14 @@ namespace KoKoViewer
         Func<IEnumerable<KoKoViewerPost>> creator;
         IEnumerator<KoKoViewerPost> iter;
 
+        public event Action HasNoMoreNow;
+
         public BrowsePostSequence(Func<IEnumerable<KoKoViewerPost>> creator)
         {
             this.creator = creator;
         }
 
+        bool hasNoMoreCalled = false;
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
             return Task.Run(async () =>
@@ -37,6 +40,12 @@ namespace KoKoViewer
                             await MainPage.Get().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
                                 Add(iter.Current));
                             actualCount++;
+                        }
+                        else
+                        {
+                            if(!hasNoMoreCalled)
+                                HasNoMoreNow();
+                            hasNoMoreCalled = true;
                         }
                     }
                 }

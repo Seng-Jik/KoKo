@@ -45,9 +45,8 @@ namespace KoKoViewer
             Safe.IsChecked = settings.RatingSafe;
             Questionable.IsChecked = settings.RatingQuestionable;
             Explicit.IsChecked = settings.RatingExplicit;
-            Unknown.IsChecked = settings.RatingUnknown;
 
-            int index = 10;
+            int index = 9;
             foreach(var spider in KoKo.AllSpiders.AllSpiders)
             {
                 var checkBox = new CheckBox()
@@ -75,7 +74,7 @@ namespace KoKoViewer
             if (String.IsNullOrWhiteSpace(searchTab.Header as string))
                 searchTab.Header = "Browser";
 
-            searchTab.IconSource = new SymbolIconSource() { Symbol = Symbol.BrowsePhotos };
+            searchTab.IconSource = new SymbolIconSource() { Symbol = Symbol.Find };
 
             Func<IEnumerable<KoKoViewerPost>> f = () =>
             {
@@ -107,7 +106,8 @@ namespace KoKoViewer
                 return postEnum;
             };
 
-            (searchTab.Content as Frame).Navigate(typeof(BrowsePage), Tuple.Create(new BrowsePostSequence(f) as ObservableCollection<KoKoViewerPost>, searchOption));
+            var tab = searchTab;
+            (searchTab.Content as Frame).Navigate(typeof(BrowsePage), Tuple.Create(new BrowsePostSequence(f), searchOption, tab));
         }
 
         private void Search_Click(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
@@ -115,7 +115,7 @@ namespace KoKoViewer
             bool safe = Safe.IsChecked.GetValueOrDefault(false);
             bool questionable = Questionable.IsChecked.GetValueOrDefault(false);
             bool exp = Explicit.IsChecked.GetValueOrDefault(false);
-            bool unknown = Unknown.IsChecked.GetValueOrDefault(false);
+            bool unknown = false;
 
             var settings = new SearchSettings();
             settings.RatingSafe = safe;

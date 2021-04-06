@@ -51,6 +51,17 @@ module Utils =
         with e -> return (Error e)
     }
 
+    let takeWhileTimes times (f: 'a -> bool) (s: 'a seq) =
+        Seq.unfold (fun (timesNow, insequence) ->
+            Seq.tryHead insequence
+            |> Option.bind (fun item ->
+                let nextInseq = Seq.tail insequence
+                if f item then Some (item, (0, nextInseq))
+                else 
+                    if timesNow > times then None
+                    else Some (item, (timesNow + 1, nextInseq)) )) 
+             (0, s)
+
     let getFileNameFromUrl (url: string) =
         let nameWithParam =
             let url = url.Replace('\\', '/')

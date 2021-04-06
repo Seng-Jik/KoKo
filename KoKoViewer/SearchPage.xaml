@@ -27,7 +27,6 @@
             <CheckBox IsChecked="True" Name="Safe">Safe</CheckBox>
             <CheckBox IsChecked="True" Name="Questionable">Questionable</CheckBox>
             <CheckBox IsChecked="True" Name="Explicit">Explicit</CheckBox>
-            <CheckBox IsChecked="True" Name="Unknown">Unknown</CheckBox>
 
             <TextBlock> </TextBlock>
             <TextBlock>Sources:</TextBlock>

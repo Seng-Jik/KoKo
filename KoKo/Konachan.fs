@@ -55,21 +55,17 @@ type KonachanSpider (args: SpiderArguments) =
                             result <- Error e
                             retry <- retry - 1
                             System.Threading.Thread.Sleep 5000
-                    match result with
-                    | Ok x -> x
-                    | Error e -> 
-                        printfn "- Konachan Spider"
-                        printfn "Page Parsing Error:"
-                        printfn "Page: %d" pageId
-                        printfn "Spider: %s" <| Spider.name spider
-                        printfn "%A" e
-                        PostParser.Posts(0, 0, [||]))
+                    result)                     // 可以携带错误信息到最终结果里，以用来在UI上显示错误信息
             let head = Seq.head pages
             let pages = Seq.append [head] <| Seq.tail pages
-            let count = (Seq.head pages).Count
             pages
-            |> Seq.collect (fun x -> x.Posts)
-            |> Seq.take (count * 2)
+            |> Utils.takeWhileTimes 5 (function
+            | Ok x when x.Posts.Length > 0 -> true
+            | _ -> false)
+            |> Seq.choose (function
+            | Ok x -> Some x.Posts
+            | _ -> None)
+            |> Seq.concat
             |> Seq.choose (fun x -> 
                 try 
                     Some {

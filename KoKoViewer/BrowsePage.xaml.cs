@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Windows.UI.Popups;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -33,7 +34,7 @@ namespace KoKoViewer
     /// </summary>
     public sealed partial class BrowsePage : Page
     {
-        ObservableCollection<KoKoViewerPost> posts;
+        BrowsePostSequence posts;
         SearchOption searchOption;
 
         public BrowsePage()
@@ -46,13 +47,25 @@ namespace KoKoViewer
             base.OnNavigatedTo(e);
 
             
-            var p = (Tuple<ObservableCollection<KoKoViewerPost>, SearchOption>)e.Parameter;
+            var p = (Tuple<BrowsePostSequence, SearchOption, TabViewItem>)e.Parameter;
             posts = p.Item1;
             searchOption = p.Item2;
             posts.CollectionChanged += (o, ee) =>
             {
                 ProgressRing.Visibility = Visibility.Collapsed;
+                ProgressRingLoadingMore.Visibility = Visibility.Visible;
+                p.Item3.IconSource = new SymbolIconSource { Symbol = Symbol.BrowsePhotos };
             };
+
+            posts.HasNoMoreNow += async () => 
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () => 
+                {
+                    ProgressRing.Visibility = Visibility.Collapsed;
+                    ProgressRingLoadingMore.Visibility = Visibility.Collapsed;
+                    LoadingMoreHint.Height = new GridLength(0);
+                    p.Item3.IconSource = new SymbolIconSource { Symbol = Symbol.BrowsePhotos };
+                    
+                });
         }
 
         private void Browser_ItemClick(object sender, ItemClickEventArgs e)
@@ -197,21 +210,25 @@ namespace KoKoViewer
             var image = sender as Image;
             var post = image.Tag as KoKo.Post;
 
-            var parent = image;
+            var parent = (image.Parent as Grid);
+            var stackPanel = parent.Children
+                .Where(item => null != item as StackPanel)
+                .First() as StackPanel;
+                
 
             if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
-                (parent.FindName("Info_Fav") as SymbolIcon).Visibility = Visibility.Visible;
+                (stackPanel.FindName("Info_Fav") as SymbolIcon).Visibility = Visibility.Visible;
 
             if (DownloadHelper.GetDownloaded(post) != null)
-                (parent.FindName("Info_Downloaded") as SymbolIcon).Visibility = Visibility.Visible;
+                (stackPanel.FindName("Info_Downloaded") as SymbolIcon).Visibility = Visibility.Visible;
 
             var imageName = post.images.First().First().fileName.ToLower().Trim();
 
             if (imageName.EndsWith(".gif"))
-                (parent.FindName("Info_GIF") as SymbolIcon).Visibility = Visibility.Visible;
+                (stackPanel.FindName("Info_GIF") as SymbolIcon).Visibility = Visibility.Visible;
 
             else if (imageName.EndsWith(".mp4") || imageName.EndsWith(".webm"))
-                (parent.FindName("Info_Video") as SymbolIcon).Visibility = Visibility.Visible; ;
+                (stackPanel.FindName("Info_Video") as SymbolIcon).Visibility = Visibility.Visible; ;
         }
     }
 }

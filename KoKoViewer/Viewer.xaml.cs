@@ -79,7 +79,7 @@ namespace KoKoViewer
             {
                 // 如果是图片
                 FindName("ScrollViewer");
-                ProgressRing.IsActive = true;
+                this.ProgressRing.IsActive = true;
                 if (cache != null)
                 {
                     Flyout_ViewLarger.IsEnabled = false;

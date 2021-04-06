@@ -28,16 +28,13 @@ type DanbooruSpider (name, domain) =
                             result <- Error e
                             retry <- retry - 1
                             System.Threading.Thread.Sleep 5000
-                    match result with
-                    | Ok x -> x.Posts
-                    | Error e -> 
-                        printfn "- Danbooru Spider"
-                        printfn "Page Parsing Error:"
-                        printfn "Page: %d" pageId
-                        printfn "Spider: %s" <| Spider.name spider
-                        printfn "%A" e
-                        [||])   // TODO: Report x
-                |> Seq.takeWhile (fun x -> x.Length > 0)    // Bug Here.
+                    result)
+                |> Utils.takeWhileTimes 5 (function
+                | Ok x when x.Posts.Length > 0 -> true
+                | _ -> false)
+                |> Seq.choose (function
+                | Ok x -> Some x.Posts
+                | _ -> None)
                 |> Seq.concat
             
             pages

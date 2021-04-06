@@ -12,6 +12,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="64" x:Name="LoadingMoreHint"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <ProgressRing 
@@ -20,6 +21,7 @@
             IsActive="True"
             HorizontalAlignment="Center"
             Name="ProgressRing"/>
+
 
         <GridView 
             Grid.Row="0"
@@ -45,6 +47,7 @@
                         <StackPanel 
                             VerticalAlignment="Top"
                             Background="LightGray"
+                            Name="InformationDisplay"
                             Opacity="0.7"
                             HorizontalAlignment="Left">
                             <SymbolIcon 
@@ -73,7 +76,15 @@
             </GridView.ItemTemplate>
         </GridView>
 
-        <CommandBar OverflowButtonVisibility="Collapsed" IsOpen="False" ClosedDisplayMode="Hidden" IsSticky="True" Grid.Row="1" Name="MutiSelectionCommandBar">
+        <ProgressRing 
+            Grid.Row="1"
+            Visibility="Collapsed"
+            VerticalAlignment="Center" 
+            IsActive="True"
+            HorizontalAlignment="Center"
+            Name="ProgressRingLoadingMore"/>
+
+        <CommandBar OverflowButtonVisibility="Collapsed" IsOpen="False" ClosedDisplayMode="Hidden" IsSticky="True" Grid.Row="2" Name="MutiSelectionCommandBar">
             <AppBarButton x:Name="MutiSelectionCommandBar_OpenThese" Icon="Find" Label="Open" Click="MutiSelectionCommandBar_OpenThese_Click" />
             <AppBarButton x:Name="MutiSelectionCommandBar_FavoriteThese" Icon="Favorite" Label="Favorite" Click="MutiSelectionCommandBar_FavoriteThese_Click" />
             <AppBarButton x:Name="MutiSelectionCommandBar_UnFavoriteThese" Icon="UnFavorite" Label="UnFavorite" Click="MutiSelectionCommandBar_UnFavoriteThese_Click" />

@@ -56,7 +56,7 @@ namespace KoKoViewer
             else if(Nav_Favorites.IsSelected)
             {
                 tabViewItem.Header = "Favorites";
-                tabViewItem.IconSource = new SymbolIconSource() { Symbol = Symbol.Favorite };
+                tabViewItem.IconSource = new SymbolIconSource() { Symbol = Symbol.Find };
 
                 var searchOption = new SearchOption()
                 {
@@ -66,7 +66,7 @@ namespace KoKoViewer
                     Unknown = true,
                     Spiders = KoKo.AllSpiders.AllSpiders.ToList()
                 };
-                var param = Tuple.Create(FavoritesData.Get().GetAllFavoritesSequence() as ObservableCollection<KoKoViewerPost>, searchOption);
+                var param = Tuple.Create(FavoritesData.Get().GetAllFavoritesSequence(), searchOption, tabViewItem);
                 MainFrame.Navigate(typeof(BrowsePage), param);
             }
             //FavoritesFrame.Navigate(typeof(BrowsePage));

@@ -18,27 +18,27 @@ Anime wallpaper downloader.
 - [x] Danbooru Spider
 
 ## 已经较为稳定的爬虫
+* Konachan
+* Lolibooru
 * Gelbooru
 * Yandere
+* TheBigImageBoard
+* Safebooru
 * HypnoHub
-* Lolibooru
+* XBooru
+* Rule34
+* Realbooru
+* SankakuComplex
 * Danbooru
 * ATFbooru
-* Konachan
-* Safebooru
-* The Big Image Board
 
-## 目前问题
-* Yandere报告的图片数量（posts标签的count属性）远远小于其实际图片数量
-* Gelbooru需要登录后才可查看20000后的图片
+## 后续工作
+* Spider输出内容改为Result，以将错误信息报告给GUI.
+* More Spiders.
+* KoKo.Viewer支持搜索时常用关键字补全。
 
 ## KoKoViewer
 KoKoViewer是KoKo的使用UWP的GUI实现，提供了基本的浏览功能。    
-
-### 后续工作
-- [x] 收藏夹
-- [x] 下载图片
-- [ ] 支持播放视频
 
 ### 如何安装
 1. 下载Release包后解压并运行Install.ps1，此脚本将会引导你打开Windows的“开发人员模式”并安装KoKoViewer，此后便可在开始菜单找到。
