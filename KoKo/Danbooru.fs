@@ -29,7 +29,7 @@ type DanbooruSpider (name, domain) =
                             retry <- retry - 1
                             System.Threading.Thread.Sleep 5000
                     result)
-                |> Utils.takeWhileTimes 5 (function
+                |> Utils.takeWhileTimes 3 (function
                 | Ok x when x.Posts.Length > 0 -> true
                 | _ -> false)
                 |> Seq.choose (function

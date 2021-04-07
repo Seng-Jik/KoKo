@@ -59,7 +59,7 @@ type KonachanSpider (args: SpiderArguments) =
             let head = Seq.head pages
             let pages = Seq.append [head] <| Seq.tail pages
             pages
-            |> Utils.takeWhileTimes 5 (function
+            |> Utils.takeWhileTimes 3 (function
             | Ok x when x.Posts.Length > 0 -> true
             | _ -> false)
             |> Seq.choose (function

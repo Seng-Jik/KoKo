@@ -36,6 +36,7 @@ Anime wallpaper downloader.
 * Spider输出内容改为Result，以将错误信息报告给GUI.
 * More Spiders.
 * KoKo.Viewer支持搜索时常用关键字补全。
+* KoKo.Viewer支持查看历史记录。
 
 ## KoKoViewer
 KoKoViewer是KoKo的使用UWP的GUI实现，提供了基本的浏览功能。    

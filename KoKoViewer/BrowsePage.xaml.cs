@@ -207,28 +207,50 @@ namespace KoKoViewer
 
         private void Image_ImageOpened(object sender, RoutedEventArgs e)
         {
-            var image = sender as Image;
-            var post = image.Tag as KoKo.Post;
+            try
+            {
+                var image = sender as Image;
+                var post = image.Tag as KoKo.Post;
 
-            var parent = (image.Parent as Grid);
-            var stackPanel = parent.Children
-                .Where(item => null != item as StackPanel)
-                .First() as StackPanel;
-                
+                DependencyObject parent = VisualTreeHelper.GetParent(image);
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); ++i)
+                {
+                    DependencyObject obj = VisualTreeHelper.GetChild(parent, i);
+                    if (obj is StackPanel)
+                    {
+                        var stackPanel = (obj as StackPanel);
+                        if (stackPanel.Name == "InformationDisplay")
+                        {
+                            try
+                            {
+                                if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
+                                    (stackPanel.FindName("Info_Fav") as SymbolIcon).Visibility = Visibility.Visible;
+                            }
+                            catch (Exception) { }
 
-            if (FavoritesData.Get().Has(post.fromSpider.Name, post.id))
-                (stackPanel.FindName("Info_Fav") as SymbolIcon).Visibility = Visibility.Visible;
+                            try
+                            {
+                                if (DownloadHelper.GetDownloaded(post) != null)
+                                    (stackPanel.FindName("Info_Downloaded") as SymbolIcon).Visibility = Visibility.Visible;
+                            }
+                            catch (Exception) { }
 
-            if (DownloadHelper.GetDownloaded(post) != null)
-                (stackPanel.FindName("Info_Downloaded") as SymbolIcon).Visibility = Visibility.Visible;
+                            try
+                            {
+                                var imageName = post.images.First().First().fileName.ToLower().Trim();
 
-            var imageName = post.images.First().First().fileName.ToLower().Trim();
+                                if (imageName.EndsWith(".gif"))
+                                    (stackPanel.FindName("Info_GIF") as SymbolIcon).Visibility = Visibility.Visible;
 
-            if (imageName.EndsWith(".gif"))
-                (stackPanel.FindName("Info_GIF") as SymbolIcon).Visibility = Visibility.Visible;
-
-            else if (imageName.EndsWith(".mp4") || imageName.EndsWith(".webm"))
-                (stackPanel.FindName("Info_Video") as SymbolIcon).Visibility = Visibility.Visible; ;
+                                else if (imageName.EndsWith(".mp4") || imageName.EndsWith(".webm"))
+                                    (stackPanel.FindName("Info_Video") as SymbolIcon).Visibility = Visibility.Visible;
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                }
+            }
+            catch (Exception) { }
         }
     }
 }
