@@ -37,6 +37,8 @@ namespace KoKoViewer
         BrowsePostSequence posts;
         SearchOption searchOption;
 
+        
+
         public BrowsePage()
         {
             this.InitializeComponent();

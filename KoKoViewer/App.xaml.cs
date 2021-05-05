@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System.Profile;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -31,6 +32,11 @@ namespace KoKoViewer
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            UnhandledException += async(o, e) =>
+            {
+                await new MessageDialog(e.ToString()).ShowAsync();
+            };
         }
 
         /// <summary>

@@ -34,11 +34,30 @@ namespace KoKoViewer
 
             string toastXml = $@"<toast>{visualXml}</toast>";
 
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(toastXml);
-            var toast = new ToastNotification(xml);
+            try
+            {
+                XmlDocument xml = new XmlDocument();
+                xml.LoadXml(toastXml);
+                var toast = new ToastNotification(xml);
 
-            notifier.Show(toast);
+                notifier.Show(toast);
+            }
+            catch(Exception)
+            {
+                visualXml = $@"<visual><binding template='ToastGeneric'><text>{title}</text><text>{content}</text></binding></visual>";
+
+                toastXml = $@"<toast>{visualXml}</toast>";
+
+                try
+                {
+                    XmlDocument xml = new XmlDocument();
+                    xml.LoadXml(toastXml);
+                    var toast = new ToastNotification(xml);
+
+                    notifier.Show(toast);
+                }
+                catch(Exception) { }
+            }
         }
 
         static void ToastFailed(KoKo.Post post, string message)
