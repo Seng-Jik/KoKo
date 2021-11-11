@@ -63,7 +63,13 @@ type SankakuComplex (name, urlBase, sourceBase) =
                                     x.Source.Value
                         ]
 
-                        tags = x.Tags |> Seq.map (fun x -> x.NameEn)
+                        tags = 
+                            x.Tags 
+                            |> Seq.choose (fun x -> 
+                                x.JsonValue.TryGetProperty("name")
+                                |> Option.orElse (x.JsonValue.TryGetProperty("name_en"))
+                                |> Option.orElse (x.JsonValue.TryGetProperty("name_jp")))
+                            |> Seq.map JsonExtensions.AsString
 
                         previewImage = mapToImage x.PreviewUrl
 
