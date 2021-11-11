@@ -3,9 +3,13 @@ open FSharp.Data
 
 type private PostParser = JsonProvider<"SankakuComplexExample.json">
 
-type SankakuComplex () =
+let private fixUrlPrefix (x: string) =
+    if x.StartsWith "//" then "https:" + x
+    else x
+
+type SankakuComplex (name, urlBase, sourceBase) =
     interface ISpider with
-        member x.Name = "Sankaku Channel"
+        member x.Name = name
         member x.All = Spider.search "" x
         member x.GetPostById id = async { return Spider.search $"id:{id}" x |> Seq.tryHead }
         member spider.Search tags =
@@ -15,7 +19,7 @@ type SankakuComplex () =
                     let mutable result : Result<PostParser.Root[], exn> = Error null
                     while retry > 0 do
                         try
-                            sprintf "https://capi-v2.sankakucomplex.com/posts?page=%u&tags=%s" pageId tags
+                            sprintf "%s?page=%u&tags=%s" urlBase pageId tags
                             |> Utils.downloadString
                             |> Async.RunSynchronously
                             |> function
@@ -40,7 +44,7 @@ type SankakuComplex () =
                 try 
                     let mapToImage = 
                         Option.map (fun x -> {
-                            imageUrl = x
+                            imageUrl = fixUrlPrefix <| x
                             fileName = Utils.getFileNameFromUrl x |> Utils.normalizeFileName
                         })
 
@@ -53,7 +57,7 @@ type SankakuComplex () =
                             with _ -> ValueNone
 
                         sourceUrl = [
-                            $"https://chan.sankakucomplex.com/post/show/{x.Id}"
+                            $"{sourceBase}{x.Id}"
                             if x.Source.IsSome then
                                 if System.String.IsNullOrWhiteSpace x.Source.Value |> not then
                                     x.Source.Value
@@ -79,5 +83,12 @@ type SankakuComplex () =
                     None)
 
 let SankakuComplex : ISpider list = [
-    SankakuComplex ()
+    SankakuComplex (
+        "Sankaku Channel", 
+        "https://capi-v2.sankakucomplex.com/posts", 
+        "https://chan.sankakucomplex.com/post/show/")
+    SankakuComplex (
+        "Sankaku Idol", 
+        "https://iapi.sankakucomplex.com/post/index.json",
+        "https://idol.sankakucomplex.com/post/show/")
 ]
