@@ -11,7 +11,10 @@ type SankakuComplex (name, urlBase, sourceBase) =
     interface ISpider with
         member x.Name = name
         member x.All = Spider.search "" x
-        member x.GetPostById id = async { return Spider.search $"id:{id}" x |> Seq.tryHead }
+        member x.GetPostById id = 
+            if name = "Sankaku Idol" 
+            then async { return None }
+            else async { return Spider.search $"id:{id}" x |> Seq.tryHead }
         member spider.Search tags =
             let pages =
                 Seq.initInfinite (fun pageId ->
