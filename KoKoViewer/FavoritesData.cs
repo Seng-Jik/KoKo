@@ -127,7 +127,7 @@ namespace KoKoViewer
         {
             var s = 
                 FSharpAsync.RunSynchronously(
-                        (from spider in KoKo.AllSpiders.AllSpiders
+                        (from spider in KoKo.QwQAdapter.allSources
                          where spider.Name == post.Item1
                          select spider).Single().GetPostById(post.Item2),
                         FSharpOption<int>.None,

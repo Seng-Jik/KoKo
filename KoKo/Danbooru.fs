@@ -60,6 +60,7 @@ type DanbooruSpider (name, domain) =
                             |> Option.map (fun x -> {
                                 imageUrl = x
                                 fileName = Utils.getFileNameFromUrl x
+                                headers = []
                             })
                         images = seq {   
                             seq {
@@ -68,10 +69,12 @@ type DanbooruSpider (name, domain) =
                                         {
                                             imageUrl = x.LargeFileUrl.Value
                                             fileName = Utils.getFileNameFromUrl x.LargeFileUrl.Value
+                                            headers = []
                                         }
                                 {
                                     imageUrl = x.FileUrl
                                     fileName = Utils.getFileNameFromUrl x.FileUrl
+                                    headers = []
                                 }
                             }
                         }

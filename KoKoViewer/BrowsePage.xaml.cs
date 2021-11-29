@@ -207,6 +207,11 @@ namespace KoKoViewer
             selectionMode = false;
         }
 
+        private void ImagePreview_Load(object sender, RoutedEventArgs _)
+        {
+            var img = sender as Image;
+        }
+
         private void Image_ImageOpened(object sender, RoutedEventArgs e)
         {
             try

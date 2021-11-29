@@ -42,6 +42,7 @@
                             Tag="{x:Bind post}"
                             Stretch="Uniform"
                             Width="256"
+                            Loaded="ImagePreview_Load"
                             ImageOpened="Image_ImageOpened"
                             x:Phase="1"/>
                         <StackPanel 

@@ -47,7 +47,7 @@ namespace KoKoViewer
             Explicit.IsChecked = settings.RatingExplicit;
 
             int index = 9;
-            foreach(var spider in KoKo.AllSpiders.AllSpiders)
+            foreach(var spider in KoKo.QwQAdapter.allSources)
             {
                 var checkBox = new CheckBox()
                 {
@@ -115,13 +115,15 @@ namespace KoKoViewer
             bool safe = Safe.IsChecked.GetValueOrDefault(false);
             bool questionable = Questionable.IsChecked.GetValueOrDefault(false);
             bool exp = Explicit.IsChecked.GetValueOrDefault(false);
-            bool unknown = false;
+            bool unknown = true;
 
-            var settings = new SearchSettings();
-            settings.RatingSafe = safe;
-            settings.RatingQuestionable = questionable;
-            settings.RatingExplicit = exp;
-            settings.RatingUnknown = unknown;
+            var settings = new SearchSettings
+            {
+                RatingSafe = safe,
+                RatingQuestionable = questionable,
+                RatingExplicit = exp,
+                RatingUnknown = unknown
+            };
 
             // Search
             var searchOption = new SearchOption()

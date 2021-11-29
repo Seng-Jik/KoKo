@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -44,6 +45,7 @@ namespace KoKoViewer
             var cache = DownloadHelper.GetDownloaded(post);
 
             var fileName = post.images.First().First().fileName.ToLower();
+
 
             if (fileName.EndsWith(".mp4") || fileName.EndsWith(".webm"))
             {

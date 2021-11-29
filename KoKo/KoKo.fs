@@ -4,6 +4,7 @@ open System.Net
 type Image = {
     imageUrl : string
     fileName : string
+    headers : (string * string) list
 }
 
 type Rating =

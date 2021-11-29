@@ -64,7 +64,7 @@ namespace KoKoViewer
                     Questionable = true,
                     Explicit = true,
                     Unknown = true,
-                    Spiders = KoKo.AllSpiders.AllSpiders.ToList()
+                    Spiders = KoKo.QwQAdapter.allSources.ToList()
                 };
                 var param = Tuple.Create(FavoritesData.Get().GetAllFavoritesSequence(), searchOption, tabViewItem);
                 MainFrame.Navigate(typeof(BrowsePage), param);

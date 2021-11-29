@@ -49,6 +49,7 @@ type SankakuComplex (name, urlBase, sourceBase) =
                         Option.map (fun x -> {
                             imageUrl = fixUrlPrefix <| x
                             fileName = Utils.getFileNameFromUrl x |> Utils.normalizeFileName
+                            headers = []
                         })
 
                     Some {

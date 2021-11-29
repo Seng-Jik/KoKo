@@ -88,6 +88,7 @@ type KonachanSpider (args: SpiderArguments) =
                             Some {
                                 imageUrl = x.PreviewUrl
                                 fileName = Utils.getFileNameFromUrl x.PreviewUrl
+                                headers = []
                             }
 
                         images = seq {
@@ -95,18 +96,21 @@ type KonachanSpider (args: SpiderArguments) =
                                 {
                                     imageUrl = x.FileUrl
                                     fileName = Utils.getFileNameFromUrl x.FileUrl
+                                    headers = []
                                 }
 
                                 if x.JpegUrl.IsSome then
                                     {
                                         imageUrl = x.JpegUrl.Value
                                         fileName = Utils.getFileNameFromUrl x.JpegUrl.Value
+                                        headers = []
                                     }
 
                                 if x.SampleUrl.IsSome then
                                     {
                                         imageUrl = x.SampleUrl.Value
                                         fileName = Utils.getFileNameFromUrl x.SampleUrl.Value
+                                        headers = []
                                     }
                             }
                         }
