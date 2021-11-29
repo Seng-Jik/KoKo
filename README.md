@@ -12,31 +12,14 @@ Anime wallpaper downloader.
 * 优先支持Sankaku-complex(https://capi-v2.sankakucomplex.com/posts)
 * 考虑GUI问题
 
-## 进度
-- [x] Konachan Spider
-- [x] KoKo Downloader
-- [x] Danbooru Spider
 
-## 已经较为稳定的爬虫
-* Konachan
-* Lolibooru
-* Gelbooru
-* Yandere
-* TheBigImageBoard
-* Safebooru
-* HypnoHub
-* XBooru
-* Rule34
-* Realbooru
-* SankakuComplex
-* Danbooru
-* ATFbooru
+## 现在开始改用QwQ了！
+之后不会再对KoKo核心库进行维护，但会继续维护GUI的部分。
 
-## 后续工作
-* Spider输出内容改为Result，以将错误信息报告给GUI.
-* More Spiders.
-* KoKo.Viewer支持搜索时常用关键字补全。
-* KoKo.Viewer支持查看历史记录。
+为了能让GUI的部分在KoKoViewer上工作，已经实现了QwQ到KoKo的适配器。
+
+参见QwQ：github.com/Seng-Jik/QwQ
+
 
 ## KoKoViewer
 KoKoViewer是KoKo的使用UWP的GUI实现，提供了基本的浏览功能。    
