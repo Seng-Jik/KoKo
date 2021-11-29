@@ -89,15 +89,37 @@ namespace KoKoViewer
                 }
                 else
                 {
-                    if (post.images.First().First().fileName.ToLower().EndsWith(".gif"))
+                    if (post.images.First().First().headers.Contains(Tuple.Create("referer", "https://nozomi.la/")))
                     {
-                        ImageSource.UriSource = new Uri(post.images.First().First().imageUrl);
-                        Flyout_ViewLarger.IsEnabled = false;
+                        var c = new System.Net.Http.HttpClient();
+                        
+                        foreach (var i in post.images.First().Last().headers)
+                            c.DefaultRequestHeaders.Add(i.Item1, i.Item2);
+                        System.Threading.Tasks.Task.Run(async () =>
+                        {
+                            var x = await c.GetByteArrayAsync(post.images.First().First().imageUrl);
+                            var y = new MemoryStream(x).AsRandomAccessStream();
+                            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, async () => 
+                            {
+                                await ImageSource.SetSourceAsync(y);
+                            });
+
+                            c.Dispose();
+                        });
+                        
                     }
                     else
                     {
-                        ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
-                        Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+                        if (post.images.First().First().fileName.ToLower().EndsWith(".gif"))
+                        {
+                            ImageSource.UriSource = new Uri(post.images.First().First().imageUrl);
+                            Flyout_ViewLarger.IsEnabled = false;
+                        }
+                        else
+                        {
+                            ImageSource.UriSource = new Uri(post.images.First().Last().imageUrl);
+                            Flyout_ViewLarger.IsEnabled = post.images.First().Count() > 1;
+                        }
                     }
                 }
             }

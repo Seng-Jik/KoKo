@@ -79,8 +79,7 @@ let sankakuComplexLoginInformation: (QwQ.Username * QwQ.Password) option =
 let allSources = 
     QwQ.Sources.Sources.sources
     |> List.except 
-        [ QwQ.Sources.Nozomi.nozomi
-          if sankakuComplexLoginInformation.IsSome then
+        [ if sankakuComplexLoginInformation.IsSome then
               QwQ.Sources.SankakuComplex.sankakuChannel ]
     |> List.append 
         [ if sankakuComplexLoginInformation.IsSome then 
