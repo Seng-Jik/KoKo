@@ -71,9 +71,25 @@ type Adapter (src: QwQ.ISource) =
             | _ -> async { return None }
 
 
+let sankakuComplexLoginInformation: (QwQ.Username * QwQ.Password) option =
+    // 如果你需要登录SankakuComplex, 则可以修改以下登录信息
+    None
+
+
 let allSources = 
     QwQ.Sources.Sources.sources
     |> List.except 
-        [ QwQ.Sources.Nozomi.nozomi ]
+        [ QwQ.Sources.Nozomi.nozomi
+          if sankakuComplexLoginInformation.IsSome then
+              QwQ.Sources.SankakuComplex.sankakuChannel ]
+    |> List.append 
+        [ if sankakuComplexLoginInformation.IsSome then 
+              let (u, p) = sankakuComplexLoginInformation.Value
+              let login = QwQ.Sources.SankakuComplex.sankakuChannel :?> QwQ.ILogin<QwQ.Username, QwQ.Password>
+              login.Login u p
+              |> Async.RunSynchronously
+              |> function
+                  | Ok x -> x
+                  | _ -> failwith "Login error!"]
     |> List.map (Adapter >> fun x -> x :> ISpider)
 
