@@ -54,7 +54,7 @@ type Adapter (src: QwQ.ISource) =
                 match src with
                 | :? QwQ.ISearch as s -> 
                     s.Search 
-                        { QwQ.SearchOptions.NonTags = []
+                        { QwQ.SearchOptions.ExludeTags = []
                           QwQ.SearchOptions.Order = QwQ.Default
                           QwQ.SearchOptions.Rating = QwQ.Unrated
                           QwQ.SearchOptions.Tags = 
